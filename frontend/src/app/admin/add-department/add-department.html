@@ -1,0 +1,42 @@
+<div class="d-flex">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <h2 class="mb-4 text-primary">
+      <i class="fa fa-plus"></i> Add Department
+    </h2>
+
+   <div *ngIf="message.text" [ngClass]="'alert alert-' + message.type" class="alert mt-3 shadow-sm">
+  {{ message.text }}
+</div>
+
+    <div class="card shadow-lg p-4 border-0 rounded-3">
+      <form #deptForm="ngForm" (ngSubmit)="deptForm.form.valid && handleSubmit()">
+        <div class="mb-4">
+          <label for="DepartmentName" class="form-label fw-bold small text-muted text-uppercase">
+            Department Name
+          </label>
+          <input
+            type="text"
+            id="DepartmentName"
+            name="departmentName"
+            class="form-control form-control-lg shadow-none border-2"
+            [class.is-invalid]="dname.invalid && dname.touched"
+            placeholder="e.g. Computer Science"
+            [(ngModel)]="departmentName"
+            #dname="ngModel"
+            required
+            minlength="2"
+          />
+          <div class="invalid-feedback">A valid department name is required (min 2 characters).</div>
+        </div>
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-primary px-5 fw-bold rounded-pill shadow" [disabled]="deptForm.invalid">
+            <i class="fa fa-save me-2"></i> Save Department
+          </button>
+          <a routerLink="/view-departments" class="btn btn-outline-secondary px-4 rounded-pill">View All</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

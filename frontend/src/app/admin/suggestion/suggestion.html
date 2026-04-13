@@ -1,0 +1,106 @@
+<div class="d-flex">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <h3 class="mb-4 text-primary fw-bold">
+      <i class="fa fa-comments me-2"></i> Faculty Suggestions
+    </h3>
+
+    <div *ngIf="loading" class="text-center p-5">
+      <div class="spinner-border text-primary"></div>
+      <p class="mt-2">⏳ Loading suggestions...</p>
+    </div>
+    
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+    <div *ngIf="!loading && !error" class="card shadow-lg border-0 rounded-3">
+      <div class="card-body">
+        <div class="table-responsive" *ngIf="suggestions.length > 0; else noData">
+          <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark text-center">
+              <tr>
+                <th>#</th>
+                <th>Faculty Name</th>
+                <th>Title</th>
+                <th>Message</th>
+                <th>Posted At</th>
+                <th>Status</th>
+                <th>Reply</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of suggestions; let i = index">
+                <td class="text-center">{{ i + 1 }}</td>
+                <td class="fw-bold">{{ s.factName }}</td>
+                <td>{{ s.title }}</td>
+                <td>{{ s.message }}</td>
+                <td class="text-center">{{ s.postedAt | date:'shortDate' }}</td>
+                <td class="text-center">
+                  <span class="badge px-3 py-2" [ngClass]="{
+                    'bg-warning text-dark': s.status === 'Pending',
+                    'bg-info': s.status === 'Reviewed',
+                    'bg-success': s.status === 'Resolved',
+                    'bg-secondary': !['Pending', 'Reviewed', 'Resolved'].includes(s.status)
+                  }">{{ s.status }}</span>
+                </td>
+                <td>
+                  <span *ngIf="s.reply" class="text-muted small">{{ s.reply }}</span>
+                  <i *ngIf="!s.reply" class="text-danger small">No reply yet</i>
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-sm btn-primary shadow-sm px-3" (click)="handleRespond(s)">
+                    💬 Respond
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noData>
+          <div class="alert alert-info text-center m-0">No suggestions found.</div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" [ngClass]="{'show d-block': showModal}" *ngIf="showModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered shadow-lg">
+      <div class="modal-content border-0">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title fw-bold">Respond to Suggestion</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body" *ngIf="selectedSuggestion">
+          <form #responseForm="ngForm">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Title</label>
+              <input type="text" class="form-control bg-light" [value]="selectedSuggestion.title" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Original Message</label>
+              <textarea class="form-control bg-light" rows="3" [value]="selectedSuggestion.message" readonly></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Update Status</label>
+              <select class="form-select" name="status" [(ngModel)]="selectedSuggestion.status">
+                <option value="Pending">Pending</option>
+                <option value="Reviewed">Reviewed</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold text-success">Admin Reply</label>
+              <textarea class="form-control" rows="3" name="reply" [(ngModel)]="selectedSuggestion.reply" placeholder="Type your response here..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer bg-light">
+          <button class="btn btn-secondary px-4" (click)="closeModal()">Close</button>
+          <button class="btn btn-success px-4 fw-bold" (click)="handleUpdate()">Update & Reply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showModal" (click)="closeModal()"></div>
+</div>

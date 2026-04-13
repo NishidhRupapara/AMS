@@ -1,0 +1,85 @@
+<div class="d-flex">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <h2 class="mb-4 text-primary">
+      <i class="fa fa-building me-2"></i> Department Details
+    </h2>
+
+    <div *ngIf="loading" class="text-center mt-5">
+      <div class="spinner-border text-primary"></div>
+      <p>⏳ Loading...</p>
+    </div>
+
+    <table *ngIf="!loading" class="table table-striped table-bordered shadow-sm bg-white">
+      <thead class="table-dark">
+        <tr>
+          <th>Department ID</th>
+          <th>Department Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dep of departments">
+          <td>{{ dep.did }}</td>
+          <td>{{ dep.departmentName }}</td>
+          <td>
+            <button (click)="handleView(dep.did)" class="btn btn-primary btn-sm me-2">
+              <i class="fa fa-eye"></i>
+            </button>
+            <button (click)="handleEdit(dep.did)" class="btn btn-warning btn-sm me-2">
+              <i class="fa fa-edit"></i>
+            </button>
+            <button (click)="handleDelete(dep.did)" class="btn btn-danger btn-sm">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="departments.length === 0">
+          <td colspan="3" class="text-center text-danger">No Departments Found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal shadow-lg" [ngClass]="{'show d-block': showViewModal}" *ngIf="showViewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Department Details</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>ID:</strong> {{ selectedDept.did }}</p>
+          <p><strong>Name:</strong> {{ selectedDept.departmentName }}</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeModals()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal shadow-lg" [ngClass]="{'show d-block': showEditModal}" *ngIf="showEditModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Department</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Department Name</label>
+            <input type="text" class="form-control" [(ngModel)]="selectedDept.departmentName">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeModals()">Cancel</button>
+          <button class="btn btn-primary" (click)="handleUpdate()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade show" *ngIf="showViewModal || showEditModal" (click)="closeModals()"></div>

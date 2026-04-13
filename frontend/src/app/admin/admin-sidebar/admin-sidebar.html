@@ -1,0 +1,83 @@
+<div class="sidebar d-flex flex-column justify-content-between vh-100 p-0 shadow">
+  
+  <div class="sidebar-top overflow-auto">
+    <h5 class="text-center text-white py-4 mb-0 border-bottom border-secondary fw-bold">
+      Admin Panel
+    </h5>
+
+    <ul class="nav flex-column px-2 mt-3">
+      
+      <li class="nav-item mb-1">
+        <a class="nav-link text-white py-2 px-3 rounded text-start" routerLink="/admin-home" routerLinkActive="active-link">
+          <span class="me-2">🏠</span> Dashboard
+        </a>
+      </li>
+
+      <li class="nav-item mb-1">
+        <button 
+          class="nav-link text-white py-2 px-3 rounded w-100 text-start d-flex justify-content-between align-items-center"
+          [ngClass]="{'active': openSubmenus.student}"
+          (click)="toggleSubmenu('student')">
+          <div><span class="me-2">🎓</span> Manage Student</div>
+          <span class="triangle" [ngClass]="{'open': openSubmenus.student}"></span>
+        </button>
+        <div class="submenu" [ngClass]="{'open': openSubmenus.student}">
+          <a class="submenu-item" routerLink="/add-student" routerLinkActive="sub-active">➕ Add Student</a>
+          <a class="submenu-item" routerLink="/view-students" routerLinkActive="sub-active">👁️ View Students</a>
+          <a class="submenu-item" routerLink="/view-attendance" routerLinkActive="sub-active">📅 View Attendance</a>
+        </div>
+      </li>
+
+      <li class="nav-item mb-1">
+        <button 
+          class="nav-link text-white py-2 px-3 rounded w-100 text-start d-flex justify-content-between align-items-center"
+          [ngClass]="{'active': openSubmenus.faculty}"
+          (click)="toggleSubmenu('faculty')">
+          <div><span class="me-2">👨‍🏫</span> Faculty</div>
+          <span class="triangle" [ngClass]="{'open': openSubmenus.faculty}"></span>
+        </button>
+        <div class="submenu" [ngClass]="{'open': openSubmenus.faculty}">
+          <a class="submenu-item" routerLink="/add-faculty" routerLinkActive="sub-active">➕ Add Faculty</a>
+          <a class="submenu-item" routerLink="/view-faculty" routerLinkActive="sub-active">👁️ View Faculty</a>
+          <a class="submenu-item" routerLink="/faculty-students" routerLinkActive="sub-active">👥 Faculty Wise Student</a>
+        </div>
+      </li>
+
+      <li class="nav-item mb-1">
+        <button 
+          class="nav-link text-white py-2 px-3 rounded w-100 text-start d-flex justify-content-between align-items-center"
+          [ngClass]="{'active': openSubmenus.department}"
+          (click)="toggleSubmenu('department')">
+          <div><span class="me-2">🏢</span> Department</div>
+          <span class="triangle" [ngClass]="{'open': openSubmenus.department}"></span>
+        </button>
+        <div class="submenu" [ngClass]="{'open': openSubmenus.department}">
+          <a class="submenu-item" routerLink="/add-department" routerLinkActive="sub-active">➕ Add Department</a>
+          <a class="submenu-item" routerLink="/view-departments" routerLinkActive="sub-active">👁️ View Departments</a>
+        </div>
+      </li>
+
+      <li class="nav-item mb-1">
+        <button 
+          class="nav-link text-white py-2 px-3 rounded w-100 text-start d-flex justify-content-between align-items-center"
+          [ngClass]="{'active': openSubmenus.notice}"
+          (click)="toggleSubmenu('notice')">
+          <div><span class="me-2">🔔</span> Notice</div>
+          <span class="triangle" [ngClass]="{'open': openSubmenus.notice}"></span>
+        </button>
+        <div class="submenu" [ngClass]="{'open': openSubmenus.notice}">
+          <a class="submenu-item" routerLink="/add-notice" routerLinkActive="sub-active">➕ Add Notice</a>
+          <a class="submenu-item" routerLink="/view-notices" routerLinkActive="sub-active">👁️ View Notices</a>
+          <a class="submenu-item" routerLink="/view-suggestions" routerLinkActive="sub-active">💡 Suggestions</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="p-3 mt-auto">
+    <button class="btn btn-danger w-100 fw-bold py-2 shadow-sm" style="background-color: #dc3545; border: none;" (click)="handleLogout()">
+      🚪 Logout
+    </button>
+  </div>
+  
+</div>

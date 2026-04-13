@@ -1,0 +1,74 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { StudentSidebarComponent } from '../student-sidebar/student-sidebar';
+
+@Component({
+  selector: 'app-student-notices',
+  standalone: true,
+  imports: [CommonModule, StudentSidebarComponent],
+  template: `
+    <div class="d-flex bg-light min-vh-100">
+      <app-student-sidebar></app-student-sidebar>
+      <div class="flex-grow-1 p-4">
+        <div class="container-fluid">
+          <div class="card border-0 shadow-sm rounded-4 p-4 bg-warning text-dark mb-4">
+            <h2 class="fw-bold mb-0">Notice Board 🔔</h2>
+            <p class="opacity-75 mb-0">Latest official announcements from college administration</p>
+          </div>
+
+          <div *ngIf="isLoading" class="text-center py-5">
+            <div class="spinner-border text-warning"></div>
+          </div>
+
+          <div class="vstack gap-3" *ngIf="!isLoading">
+            <div class="card border-0 shadow-sm rounded-4 notice-card" *ngFor="let n of notices">
+              <div class="card-body p-4 d-flex gap-4 align-items-center">
+                <div class="rounded-circle bg-warning-subtle p-3 text-warning">
+                  <i class="fas fa-bullhorn fs-4"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between">
+                    <h5 class="fw-bold text-dark mb-1">{{ n.noticeTitle || n.Title }}</h5>
+                    <span class="text-muted small">{{ n.createdAt || n.CreatedAt | date:'MMM d, h:mm a' }}</span>
+                  </div>
+                  <p class="text-secondary mb-0 mt-2">{{ n.noticeContent || n.Content || n.message }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="notices.length === 0" class="text-center py-5 text-muted">
+              <i class="fas fa-inbox fa-3x mb-3"></i>
+              <p>No new notices at this time.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .notice-card { border-left: 5px solid #ffc107 !important; transition: transform 0.2s; }
+    .notice-card:hover { transform: scale(1.01); }
+  `]
+})
+export class StudentNoticesComponent implements OnInit {
+  notices: any[] = [];
+  isLoading = true;
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    this.fetchNotices();
+  }
+
+  fetchNotices() {
+    this.http.get<any[]>("http://localhost:5139/api/Admin/notices")
+      .subscribe({
+        next: (data) => {
+          this.notices = data;
+          this.isLoading = false;
+        },
+        error: () => this.isLoading = false
+      });
+  }
+}

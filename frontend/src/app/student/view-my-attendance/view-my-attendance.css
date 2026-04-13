@@ -1,0 +1,23 @@
+
+.card {
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+.table thead th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+.bg-success-subtle { background-color: #e8f5e9 !important; }
+.bg-danger-subtle { background-color: #ffebee !important; }
+
+.badge {
+  font-size: 0.85rem;
+}

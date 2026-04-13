@@ -1,0 +1,75 @@
+<div class="d-flex align-items-stretch">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <div class="card shadow-lg rounded-3 border-0">
+      <div class="card-body p-4">
+        <h3 class="mb-4 text-primary fw-bold border-bottom pb-2">
+          ✏️ Edit Attendance
+        </h3>
+
+        <div *ngIf="loading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p>Loading record...</p>
+        </div>
+
+        <form *ngIf="!loading" (ngSubmit)="handleSubmit()">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Faculty ID</label>
+            <input
+              type="text"
+              name="facultyId"
+              [(ngModel)]="form.facultyId"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Status</label>
+            <select
+              name="status"
+              [(ngModel)]="form.status"
+              class="form-select"
+              required
+            >
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+              <option value="Leave">Leave</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Remark</label>
+            <textarea
+              name="remark"
+              [(ngModel)]="form.remark"
+              class="form-control"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Date</label>
+            <input
+              type="date"
+              name="date"
+              [(ngModel)]="form.date"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <div class="d-flex justify-content-between mt-4">
+            <a routerLink="/view-attendance" class="btn btn-secondary px-4">
+              🔙 Back
+            </a>
+            <button type="submit" class="btn btn-success px-4 fw-bold">
+              ✅ Update Record
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

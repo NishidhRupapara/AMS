@@ -1,0 +1,40 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 shadow-sm rounded">
+      <h3 class="mb-0 text-info fw-bold">Faculty Details</h3>
+      <button class="btn btn-secondary fw-bold shadow-sm" routerLink="/view-faculty">🔙 Back to List</button>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-info" role="status"></div>
+      <p class="mt-2 fw-bold text-muted">Fetching faculty details...</p>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3 p-4" *ngIf="!loading && faculty">
+
+      <h4 class="text-center text-primary fw-bold mb-4">
+        {{ faculty.fname || faculty.Fname || faculty.username || faculty.Username || faculty.email || 'Unnamed Faculty' }}
+        {{ faculty.lname || faculty.Lname || '' }}
+      </h4>
+
+      <table class="table table-bordered table-striped align-middle">
+        <tbody>
+          <tr><td class="fw-bold w-25">Database ID</td><td>{{ faculty.id || faculty.Id }}</td></tr>
+          <tr><td class="fw-bold">Faculty ID (FID)</td><td>{{ faculty.fid || faculty.Fid }}</td></tr>
+          <tr><td class="fw-bold">Department</td><td>{{ faculty.department || faculty.Department || '-' }}</td></tr>
+          <tr><td class="fw-bold">Username</td><td>{{ faculty.username || faculty.Username || '-' }}</td></tr>
+          <tr><td class="fw-bold">Email</td><td>{{ faculty.email || faculty.Email || '-' }}</td></tr>
+          <tr><td class="fw-bold">Mobile</td><td>{{ faculty.mobile || faculty.Mobile || '-' }}</td></tr>
+          <tr><td class="fw-bold">Gender</td><td>{{ faculty.gender || faculty.Gender || '-' }}</td></tr>
+          <tr><td class="fw-bold">Date of Join</td><td>{{ (faculty.doj || faculty.Doj) | date:'longDate' }}</td></tr>
+        </tbody>
+      </table>
+
+      <div class="text-center mt-4">
+        <a [routerLink]="['/faculty/edit', faculty.id || faculty.Id]" class="btn btn-warning fw-bold px-4 shadow-sm">✏️ Edit Faculty</a>
+      </div>
+    </div>
+  </div>
+</div>

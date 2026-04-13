@@ -1,0 +1,140 @@
+<div class="registration-bg min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden animate-fade">
+                    <div class="bg-primary text-white text-center py-4">
+                        <h3 class="mb-0 fw-bold">Student Registration portal</h3>
+                        <p class="mb-0 small text-light mt-1">Create your account to access the student panel</p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5 bg-white">
+                        <div *ngIf="feedback.msg" class="alert alert-{{feedback.type}} shadow-sm">
+                            {{ feedback.msg }}
+                        </div>
+
+                        <form #regForm="ngForm" (ngSubmit)="regForm.form.valid && onSubmit()">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary small">Select Department</label>
+                                    <select class="form-select shadow-none" [(ngModel)]="form.Department" name="Department" required #dept="ngModel"
+                                        (change)="form.Faculty_Id = ''" [class.is-invalid]="dept.invalid && dept.touched">
+                                        <option value="">-- Choose Department --</option>
+                                        <option *ngFor="let d of departments" [value]="d.deptName || d.DepartmentName">
+                                            {{ d.deptName || d.DepartmentName }}
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback">Required.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary small">Assign Faculty</label>
+                                    <select class="form-select shadow-none" [(ngModel)]="form.Faculty_Id" name="Faculty_Id" required #fact="ngModel" [disabled]="!form.Department" [class.is-invalid]="fact.invalid && fact.touched">
+                                        <option value="">-- Select Faculty --</option>
+                                        <option *ngFor="let f of faculties" [value]="f.fid || f.Fid"
+                                            [hidden]="form.Department && (f.department || f.Department) !== form.Department">
+                                            {{ f.fname }} {{ f.lname }}
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback">Required.</div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-secondary small">First Name</label>
+                                    <input type="text" class="form-control shadow-none" [(ngModel)]="form.Fname" name="Fname" required minlength="2" #fn="ngModel" [class.is-invalid]="fn.invalid && fn.touched">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-secondary small">Middle Name</label>
+                                    <input type="text" class="form-control shadow-none" [(ngModel)]="form.Mname" name="Mname">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-secondary small">Last Name</label>
+                                    <input type="text" class="form-control shadow-none" [(ngModel)]="form.Lname" name="Lname" required #ln="ngModel" [class.is-invalid]="ln.invalid && ln.touched">
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-secondary small">Gender</label>
+                                    <select class="form-select shadow-none" [(ngModel)]="form.Gender" name="Gender" required #gen="ngModel" [class.is-invalid]="gen.invalid && gen.touched">
+                                        <option value="">-- Select --</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-secondary small">Date of Birth</label>
+                                    <input type="date" class="form-control shadow-none" [(ngModel)]="form.DOB" name="DOB" required #dob="ngModel" [class.is-invalid]="dob.invalid && dob.touched">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-secondary small">Date of Admission</label>
+                                    <input type="date" class="form-control shadow-none" [(ngModel)]="form.DOA" name="DOA" required #doa="ngModel" [class.is-invalid]="doa.invalid && doa.touched">
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary small">Student Email</label>
+                                    <input type="email" class="form-control shadow-none" [(ngModel)]="form.Email_Id" name="Email_Id" required email #mail="ngModel" [class.is-invalid]="mail.invalid && mail.touched">
+                                    <div class="invalid-feedback">Valid email required.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary small">Mobile Number</label>
+                                    <input type="text" class="form-control shadow-none" [(ngModel)]="form.Mo_Number" name="Mo_Number" required pattern="[0-9]{10}" #mob="ngModel" [class.is-invalid]="mob.invalid && mob.touched">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-secondary small">Residential Address</label>
+                                <textarea class="form-control shadow-none" rows="2" [(ngModel)]="form.Address" name="Address" required #addr="ngModel" [class.is-invalid]="addr.invalid && addr.touched"></textarea>
+                            </div>
+
+                            <div class="p-3 bg-light border rounded-3 mb-4">
+                                <h6 class="fw-bold text-secondary mb-3 border-bottom pb-2">Parent Details</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Parent Name</label>
+                                        <input type="text" class="form-control shadow-none" [(ngModel)]="form.ParentName" name="ParentName" required #pn="ngModel" [class.is-invalid]="pn.invalid && pn.touched">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Parent Mobile</label>
+                                        <input type="text" class="form-control shadow-none" [(ngModel)]="form.ParentMobile" name="ParentMobile" required pattern="[0-9]{10}" #pm="ngModel" [class.is-invalid]="pm.invalid && pm.touched">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Parent Email</label>
+                                        <input type="email" class="form-control shadow-none" [(ngModel)]="form.ParentEmail" name="ParentEmail" email #pmail="ngModel" [class.is-invalid]="pmail.invalid && pmail.touched">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-primary small">Set Account Password <i class="fas fa-lock"></i></label>
+                                    <input type="password" class="form-control border-primary shadow-none" [(ngModel)]="form.Password" name="Password" #pw="ngModel" required minlength="6" [class.is-invalid]="pw.invalid && pw.touched" placeholder="Min 6 characters">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-primary small">Confirm Password</label>
+                                    <input type="password" class="form-control border-primary shadow-none" [(ngModel)]="form.ConfirmPassword" name="ConfirmPassword" required #cpw="ngModel" [class.is-invalid]="cpw.touched && form.Password !== form.ConfirmPassword" placeholder="Match Password">
+                                    <div class="text-danger small mt-1" *ngIf="cpw.touched && form.Password !== form.ConfirmPassword">Passwords don't match!</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                <a routerLink="/student-login" class="btn btn-outline-secondary px-4 rounded-pill">Cancel</a>
+                                <button type="submit" class="btn btn-primary px-5 fw-bold shadow rounded-pill" [disabled]="isLoading || regForm.invalid || form.Password !== form.ConfirmPassword">
+                                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                                    Register Account
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

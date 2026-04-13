@@ -1,0 +1,92 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-faculty-sidebar></app-faculty-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 p-md-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <h3 class="text-primary fw-bold mb-0">
+        <i class="fas fa-file-signature me-2"></i> Exam Marks Entry
+      </h3>
+    </div>
+
+    <div *ngIf="feedback.msg" class="alert alert-{{feedback.type}} shadow-sm animate-fade">
+      {{ feedback.msg }}
+    </div>
+
+    <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
+      <h5 class="mb-3 text-secondary border-bottom pb-2">1. Exam Details</h5>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Department</label>
+          <select class="form-select" [(ngModel)]="examDetails.department">
+            <option value="">-- Select Stream --</option>
+            <option value="BCA">BCA</option>
+            <option value="BBA">BBA</option>
+            <option value="B.Com">B.Com</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Subject</label>
+          <input type="text" class="form-control" [(ngModel)]="examDetails.subject" placeholder="e.g. Java, Accounts">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Exam Type</label>
+          <select class="form-select" [(ngModel)]="examDetails.examType">
+            <option value="">-- Select Type --</option>
+            <option value="Mid-Term">Mid-Term</option>
+            <option value="Final">Final</option>
+            <option value="Assignment">Assignment</option>
+            <option value="Practical">Practical</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Total Marks</label>
+          <input type="number" class="form-control" [(ngModel)]="examDetails.totalMarks" min="1">
+        </div>
+      </div>
+      <div class="text-end mt-3">
+        <button class="btn btn-primary px-4 fw-bold" (click)="fetchStudents()">
+          <i class="fas fa-users me-2"></i> Load Class
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade" *ngIf="studentsList.length > 0">
+      <div class="card-header bg-dark text-white d-flex justify-content-between py-3">
+        <h6 class="mb-0 align-self-center">Enter Marks for {{ examDetails.department }} - {{ examDetails.subject }}</h6>
+        <span class="badge bg-primary align-self-center">Total Students: {{ studentsList.length }}</span>
+      </div>
+      
+      <div class="table-responsive bg-white p-0">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Roll No</th>
+              <th>Student Name</th>
+              <th class="text-center">Marks Obtained (Out of {{ examDetails.totalMarks }})</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of studentsList">
+              <td class="ps-4 fw-bold text-secondary">#{{ s.sid || s.Sid }}</td>
+              <td class="fw-medium">{{ s.fname || s.Fname }} {{ s.lname || s.Lname }}</td>
+              <td class="text-center" style="width: 250px;">
+                <input type="number" class="form-control text-center mx-auto" style="width: 120px;" 
+                       [(ngModel)]="marksData[s.sid || s.Sid]" 
+                       min="0" [max]="examDetails.totalMarks"
+                       placeholder="0">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer bg-light text-end p-3">
+        <button class="btn btn-success px-5 fw-bold shadow-sm" (click)="submitMarks()">
+          <i class="fas fa-save me-2"></i> Submit Final Marks
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

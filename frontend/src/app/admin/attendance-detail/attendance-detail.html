@@ -1,0 +1,76 @@
+<div class="d-flex align-items-stretch">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <div class="container">
+      <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+            <h3 class="text-primary fw-bold mb-0">👤 Attendance Detail</h3>
+            <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">
+              🔙 Back to List
+            </button>
+          </div>
+
+          <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Fetching details...</p>
+          </div>
+
+          <div *ngIf="!loading && record" class="detail-container">
+            <table class="table table-bordered custom-table">
+              <tbody>
+                <tr>
+                  <th class="bg-light w-25">Student ID</th>
+                  <td><span class="fw-bold">#{{ record.studentId }}</span></td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Full Name</th>
+                  <td>{{ record.fullname || 'N/A' }}</td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Faculty ID</th>
+                  <td><span class="badge bg-info text-dark">Faculty: {{ record.facultyId }}</span></td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Current Status</th>
+                  <td>
+                    <span class="badge px-4 py-2" 
+                      [ngClass]="{
+                        'bg-success': record.status === 'Present',
+                        'bg-danger': record.status === 'Absent',
+                        'bg-warning text-dark': record.status === 'Leave'
+                      }">
+                      {{ record.status }}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Remark / Note</th>
+                  <td class="fst-italic text-muted">{{ record.remark || 'No remarks provided' }}</td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Recorded Date</th>
+                  <td>{{ formatDate(record.date) }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="d-flex justify-content-center mt-4 gap-3">
+              <button class="btn btn-warning px-4 fw-bold" [routerLink]="['/attendance/edit', record.id]">
+                📝 Edit Record
+              </button>
+              <button class="btn btn-secondary px-4" (click)="goBack()">
+                Close
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="!loading && !record" class="text-center py-5">
+            <h5 class="text-danger">❌ Record could not be found.</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<div class="admin-container d-flex">
+  <app-faculty-sidebar></app-faculty-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <div class="card shadow-sm border-0 p-3 mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="text-primary fw-bold mb-0">Study Material Center</h2>
+        <div class="btn-group">
+          <button class="btn" [ngClass]="viewMode === 'upload' ? 'btn-primary' : 'btn-outline-primary'" (click)="switchMode('upload')">Share New</button>
+          <button class="btn" [ngClass]="viewMode === 'history' ? 'btn-primary' : 'btn-outline-primary'" (click)="switchMode('history')">View History</button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="feedback.msg" class="alert alert-{{feedback.type}} alert-dismissible fade show" role="alert">
+      {{ feedback.msg }}
+      <button type="button" class="btn-close" (click)="feedback.msg = ''"></button>
+    </div>
+
+    <div class="card shadow-sm border-0 p-4" *ngIf="viewMode === 'upload'">
+      <form #materialForm="ngForm" (ngSubmit)="materialForm.form.valid && onSubmit()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Select Department</label>
+            <select class="form-select shadow-none" name="department" [(ngModel)]="form.department" #dept="ngModel" required [class.is-invalid]="dept.invalid && dept.touched">
+              <option value="">-- Choose Department --</option>
+              <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+            </select>
+            <div class="invalid-feedback">Target department is required.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Subject Name</label>
+            <input type="text" class="form-control shadow-none" name="subject" [(ngModel)]="form.subject" #sub="ngModel" required placeholder="e.g. Data Structures" [class.is-invalid]="sub.invalid && sub.touched">
+            <div class="invalid-feedback">Subject name is required.</div>
+          </div>
+          <div class="col-md-12 mb-3">
+            <label class="form-label fw-bold">Material Title</label>
+            <input type="text" class="form-control shadow-none" name="title" [(ngModel)]="form.title" #tit="ngModel" required minlength="3" placeholder="e.g. Unit 1 PDF Notes" [class.is-invalid]="tit.invalid && tit.touched">
+            <div class="invalid-feedback">Descriptive title is required.</div>
+          </div>
+          <div class="col-md-12 mb-4">
+            <label class="form-label fw-bold">Material URL (Drive/Link)</label>
+            <input type="url" class="form-control shadow-none" name="materialLink" [(ngModel)]="form.materialLink" #link="ngModel" required pattern="https?://.+" placeholder="https://drive.google.com/..." [class.is-invalid]="link.invalid && link.touched">
+            <div class="invalid-feedback">A valid URL (starting with http/https) is required.</div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold rounded-pill shadow" [disabled]="materialForm.invalid || isLoading">
+           <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+           SHARE WITH STUDENTS
+        </button>
+      </form>
+    </div>
+
+    <div class="card shadow-sm border-0" *ngIf="viewMode === 'history'">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th class="ps-4">Date</th>
+              <th>Department</th>
+              <th>Title</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of myMaterials">
+              <td class="ps-4">{{ m.postedOn | date:'dd/MM/yyyy' }}</td>
+              <td><span class="badge bg-info text-dark">{{ m.department }}</span></td>
+              <td class="fw-bold">{{ m.title }}</td>
+              <td>
+                <a [href]="m.link" target="_blank" class="btn btn-sm btn-outline-primary">View Link</a>
+              </td>
+            </tr>
+            <tr *ngIf="myMaterials.length === 0 && !isLoading">
+              <td colspan="4" class="text-center py-4 text-muted">No material shared yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

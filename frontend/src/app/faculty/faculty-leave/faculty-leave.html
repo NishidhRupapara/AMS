@@ -1,0 +1,92 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-faculty-sidebar></app-faculty-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 p-md-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <h3 class="text-primary fw-bold mb-0">
+        <i class="fas fa-calendar-alt me-2"></i> Leave Management
+      </h3>
+      <div class="btn-group shadow-sm">
+        <button class="btn" [ngClass]="viewMode === 'apply' ? 'btn-primary' : 'btn-outline-primary'" 
+                (click)="switchMode('apply')">Apply Leave</button>
+        <button class="btn" [ngClass]="viewMode === 'history' ? 'btn-primary' : 'btn-outline-primary'" 
+                (click)="switchMode('history')">Leave History</button>
+      </div>
+    </div>
+
+    <div *ngIf="feedback.msg" class="alert alert-{{feedback.type}} shadow-sm animate-fade">
+      {{ feedback.msg }}
+    </div>
+
+    <div *ngIf="viewMode === 'apply'" class="card border-0 shadow-sm p-4 animate-fade rounded-4">
+      <h5 class="mb-4 text-secondary">New Leave Application</h5>
+      <form (ngSubmit)="onSubmit()">
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Start Date</label>
+            <input type="date" class="form-control" [(ngModel)]="form.startDate" name="startDate" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold">End Date</label>
+            <input type="date" class="form-control" [(ngModel)]="form.endDate" name="endDate" required>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-bold">Reason for Leave</label>
+          <textarea class="form-control" rows="4" [(ngModel)]="form.reason" name="reason" 
+                    placeholder="Briefly describe the reason for your leave..." required></textarea>
+        </div>
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">
+            <i class="fas fa-paper-plane me-2"></i> Submit Application
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div *ngIf="viewMode === 'history'" class="animate-fade">
+      <div *ngIf="isLoading" class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+
+      <div *ngIf="!isLoading && myLeaves.length === 0" class="text-center py-5 text-muted">
+        <i class="fas fa-folder-open fa-3x mb-3"></i>
+        <p>No leave requests found.</p>
+      </div>
+
+      <div class="table-responsive bg-white rounded-4 shadow-sm p-3" *ngIf="myLeaves.length > 0">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light text-secondary">
+            <tr>
+              <th>Applied On</th>
+              <th>Duration</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Admin Remark</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let leave of myLeaves">
+              <td class="small">{{ leave.appliedOn | date:'mediumDate' }}</td>
+              <td class="fw-bold text-dark">
+                {{ leave.startDate | date:'dd MMM' }} - {{ leave.endDate | date:'dd MMM yyyy' }}
+              </td>
+              <td><span class="d-inline-block text-truncate" style="max-width: 200px;" title="{{leave.reason}}">{{ leave.reason }}</span></td>
+              <td>
+                <span class="badge rounded-pill px-3 py-2" 
+                      [ngClass]="{
+                        'bg-warning text-dark': leave.status === 'Pending',
+                        'bg-success': leave.status === 'Approved',
+                        'bg-danger': leave.status === 'Rejected'
+                      }">
+                  {{ leave.status }}
+                </span>
+              </td>
+              <td class="small text-muted italic">{{ leave.adminRemark }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

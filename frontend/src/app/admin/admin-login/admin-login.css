@@ -1,0 +1,45 @@
+/* Soft gray background for the whole page */
+.login-wrapper {
+  background-color: #f4f6f9; 
+}
+
+/* Card sizing and shadow */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 4px;
+  overflow: hidden; /* Ensures the top line stays clipped to the corners */
+}
+
+/* The signature top blue line from your screenshot */
+.top-accent-line {
+  height: 6px;
+  background-color: #0d6efd; /* Bootstrap primary blue */
+  width: 100%;
+}
+
+/* Make the icon block and input look like one continuous box */
+.input-group-text {
+  border-color: #ced4da;
+}
+.form-control {
+  border-color: #ced4da;
+}
+
+/* When the user clicks the input, highlight the whole box in blue */
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .form-control {
+  border-color: #86b7fe;
+  outline: 0;
+}
+
+/* Button styling to match the screenshot */
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+.btn-primary:hover {
+  background-color: #0b5ed7;
+}

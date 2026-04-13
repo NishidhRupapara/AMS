@@ -1,0 +1,99 @@
+<div class="d-flex">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <div class="card shadow-lg border-0">
+      <div class="card-header bg-dark text-white d-flex align-items-center p-3">
+        <span class="me-2">📢</span>
+        <h4 class="mb-0">All Notices</h4>
+      </div>
+      <div class="card-body">
+        
+        <div *ngIf="loading" class="text-center p-4">
+          <div class="spinner-border text-primary"></div>
+          <p class="mt-2">⏳ Loading notices...</p>
+        </div>
+        
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+        <div *ngIf="!loading && !error" class="table-responsive">
+          <table *ngIf="notices.length > 0" class="table table-bordered table-striped align-middle">
+            <thead class="table-dark text-center">
+              <tr>
+                <th>Notice ID</th>
+                <th>Title</th>
+                <th>Message</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let notice of notices">
+                <td class="text-center">{{ notice.noticeId }}</td>
+                <td class="fw-bold">{{ notice.noticeTitle }}</td>
+                <td>{{ notice.noticeMessage }}</td>
+                <td class="text-center">
+                  <button class="btn btn-info btn-sm mx-1 shadow-sm" (click)="handleView(notice.noticeId)">👁️</button>
+                  <button class="btn btn-warning btn-sm mx-1 shadow-sm" (click)="handleEdit(notice)">✏️</button>
+                  <button class="btn btn-danger btn-sm mx-1 shadow-sm" (click)="handleDelete(notice.noticeId)">🗑️</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div *ngIf="notices.length === 0" class="alert alert-warning text-center">
+            No notices posted yet.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" [ngClass]="{'show d-block': showViewModal}" *ngIf="showViewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Notice Details</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body" *ngIf="selectedNotice">
+          <p><strong>ID:</strong> {{ selectedNotice.noticeId }}</p>
+          <p><strong>Title:</strong> {{ selectedNotice.noticeTitle }}</p>
+          <p><strong>Message:</strong> {{ selectedNotice.noticeMessage }}</p>
+          <p><strong>Created At:</strong> {{ selectedNotice.createdAt | date:'medium' }}</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeModals()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" [ngClass]="{'show d-block': showEditModal}" *ngIf="showEditModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title fw-bold">Edit Notice</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="handleUpdate()">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Title</label>
+              <input type="text" class="form-control" name="noticeTitle" [(ngModel)]="editData.noticeTitle" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Message</label>
+              <textarea class="form-control" name="noticeMessage" rows="4" [(ngModel)]="editData.noticeMessage" required></textarea>
+            </div>
+            <div class="text-end">
+              <button type="button" class="btn btn-secondary me-2" (click)="closeModals()">Cancel</button>
+              <button type="submit" class="btn btn-primary px-4">Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop fade show" *ngIf="showViewModal || showEditModal" (click)="closeModals()"></div>
+</div>

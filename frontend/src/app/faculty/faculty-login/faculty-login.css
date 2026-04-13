@@ -1,0 +1,26 @@
+.login-container {
+  height: 100vh;
+  background-color: #f4f7f6;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+  border-top: 5px solid #0d6efd !important;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #0d6efd;
+  background-color: #fff !important;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #0a58ca;
+  letter-spacing: 1px;
+}

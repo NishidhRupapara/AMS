@@ -1,0 +1,65 @@
+/* I have omitted the body tag as it should be in styles.css globally */
+
+.main-sidebar {
+  background-color: #212529;
+  height: 100vh;
+  padding: 20px 10px;
+  color: white;
+}
+
+.main-sidebar h5 {
+  text-align: center;
+  color: white;
+}
+
+.nav-list-name .nav-link {
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  display: block;
+}
+
+.nav-list-name .nav-link:hover {
+  background-color: #343a40;
+}
+
+.logout-btn {
+  margin-top: auto;
+}
+
+.main-header {
+  background-color: #343a40;
+  padding: 10px 20px;
+  color: white;
+}
+
+.main-content {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 80vh;
+}
+
+.main-footer {
+  background-color: #343a40;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+}
+
+@media (max-width: 768px) {
+  .main-sidebar {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .main-sidebar ul {
+    flex-direction: row;
+  }
+
+  .main-sidebar .logout-btn {
+    margin-left: auto;
+  }
+}

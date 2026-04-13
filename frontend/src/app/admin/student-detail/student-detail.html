@@ -1,0 +1,43 @@
+<div class="d-flex">
+  <app-admin-sidebar></app-admin-sidebar>
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <h3 class="text-primary mb-4">Student Details</h3>
+
+    <div *ngIf="loading" class="text-center mt-4">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p>Loading student data...</p>
+    </div>
+
+    <div *ngIf="!loading && student" class="card shadow p-4">
+      <h5 class="mb-3 text-center text-success fw-bold">
+        {{ student.fname || student.Fname }} {{ student.mname || student.Mname }} {{ student.lname || student.Lname }}
+      </h5>
+      <table class="table table-bordered table-striped">
+        <tbody>
+          <tr><th style="width: 30%;">Student ID</th><td>{{ student.sid || student.Sid || student.id || student.Id || student._id }}</td></tr>
+          <tr><th>Faculty ID</th><td>{{ student.faculty_Id || student.Faculty_Id }}</td></tr>
+          <tr><th>Gender</th><td>{{ student.gender || student.Gender }}</td></tr>
+          <tr><th>Date of Birth</th><td>{{ formatDate(student.dob || student.Dob) }}</td></tr>
+          <tr><th>Date of Admission</th><td>{{ formatDate(student.doa || student.Doa) }}</td></tr>
+          <tr><th>Email</th><td>{{ student.email_Id || student.Email_Id }}</td></tr>
+          <tr><th>Mobile</th><td>{{ student.mo_Number || student.Mo_Number }}</td></tr>
+          <tr><th>Address</th><td>{{ student.address || student.Address }}</td></tr>
+          <tr><th>Parent Name</th><td>{{ student.parentName || student.ParentName }}</td></tr>
+          <tr><th>Parent Mobile</th><td>{{ student.parentMobile || student.ParentMobile }}</td></tr>
+          <tr><th>Parent Email</th><td>{{ student.parentEmail || student.ParentEmail }}</td></tr>
+        </tbody>
+      </table>
+      <div class="text-center mt-4">
+        <a routerLink="/view-students" class="btn btn-outline-secondary px-4 me-3">⬅️ Back to List</a>
+        <a [routerLink]="['/student/edit', student.sid || student.Sid || student.Id || student._id]" class="btn btn-warning shadow-sm fw-bold px-4">✏️ Edit Student</a>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && !student" class="alert alert-danger mt-3 shadow-sm text-center">
+      <h5 class="mb-1">⚠️ Student Not Found</h5>
+      <p class="mb-0">We couldn't load this student's data. Please check your backend connection or go back to the list.</p>
+      <a routerLink="/view-students" class="btn btn-dark mt-3">Return to Students</a>
+    </div>
+
+  </div>
+</div>

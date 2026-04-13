@@ -1,0 +1,33 @@
+.avatar-sm {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.85rem;
+}
+
+.icon-box {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.table td {
+  padding: 15px 10px;
+}
+
+.main-content {
+  background-color: #f8f9fa;
+}
+
+/* Hover effect for the links */
+.text-dark:hover {
+  color: #0d6efd !important;
+  text-decoration: underline !important;
+}

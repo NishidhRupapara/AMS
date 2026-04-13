@@ -1,0 +1,98 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-student-sidebar></app-student-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 p-md-5">
+    <div class="row mb-4 animate-fade">
+      <div class="col-12">
+        <div class="welcome-card p-4 rounded-4 shadow-sm bg-white border-start border-primary border-5">
+          <h2 class="fw-bold text-dark">Hello, {{ studentName }}! 👋</h2>
+          <p class="text-muted mb-0">Welcome back to your academic portal. Here is your current progress in <strong>{{ studentDept }}</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100 stat-card">
+          <div class="card-body text-center p-4">
+            <div class="icon-circle bg-primary-soft text-primary mb-3 mx-auto">
+              <i class="fas fa-calendar-check fa-2x"></i>
+            </div>
+            <h5 class="text-secondary small fw-bold text-uppercase">Total Attendance</h5>
+            <h1 class="fw-bold mb-0">{{ stats.attendancePercentage }}%</h1>
+            <div class="progress mt-3" style="height: 8px;">
+              <div class="progress-bar bg-primary" [style.width.%]="stats.attendancePercentage"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100 stat-card">
+          <div class="card-body text-center p-4">
+            <div class="icon-circle bg-success-soft text-success mb-3 mx-auto">
+              <i class="fas fa-user-check fa-2x"></i>
+            </div>
+            <h5 class="text-secondary small fw-bold text-uppercase">Present Days</h5>
+            <h1 class="fw-bold mb-0">{{ stats.presentDays }}</h1>
+            <p class="small text-muted mt-2">Out of {{ stats.totalClasses }} total classes</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100 stat-card">
+          <div class="card-body text-center p-4">
+            <div class="icon-circle bg-info-soft text-info mb-3 mx-auto">
+              <i class="fas fa-book-open fa-2x"></i>
+            </div>
+            <h5 class="text-secondary small fw-bold text-uppercase">My ID</h5>
+            <h1 class="fw-bold mb-0">#{{ studentId }}</h1>
+            <p class="small text-muted mt-2">Active Student Account</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+          <div class="card-header bg-white border-0 py-3 ps-4">
+            <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-bullhorn me-2 text-warning"></i> Latest Announcement</h5>
+          </div>
+          <div class="card-body px-4">
+            <div *ngIf="latestNotice" class="notice-box p-3 rounded-3 bg-light">
+              <h6 class="fw-bold text-primary">{{ latestNotice.title }}</h6>
+              <p class="small text-secondary mb-2">{{ latestNotice.message }}</p>
+              <small class="text-muted"><i class="far fa-clock me-1"></i> Posted on: {{ latestNotice.date | date:'mediumDate' }}</small>
+            </div>
+            <div *ngIf="!latestNotice" class="text-center py-4 text-muted">
+              No recent announcements.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+          <div class="card-header bg-white border-0 py-3 ps-4">
+            <h5 class="mb-0 fw-bold text-dark">Quick Access</h5>
+          </div>
+          <div class="card-body">
+            <div class="list-group list-group-flush">
+              <button class="list-group-item list-group-item-action border-0 rounded-3 mb-2 bg-light">
+                <i class="fas fa-file-invoice text-primary me-3"></i> View Full Attendance
+              </button>
+              <button class="list-group-item list-group-item-action border-0 rounded-3 mb-2 bg-light">
+                <i class="fas fa-graduation-cap text-success me-3"></i> Check Exam Results
+              </button>
+              <button class="list-group-item list-group-item-action border-0 rounded-3 bg-light">
+                <i class="fas fa-download text-info me-3"></i> Download Study Notes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

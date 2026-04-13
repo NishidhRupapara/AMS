@@ -1,0 +1,85 @@
+<div class="d-flex">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="text-primary fw-bold">Edit Faculty</h3>
+        <a routerLink="/view-faculty" class="btn btn-secondary">⬅️ Back to List</a>
+      </div>
+
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+        <p class="mt-2 text-muted">Loading faculty data...</p>
+      </div>
+
+      <form *ngIf="!loading" class="card p-4 shadow-sm border-0" (ngSubmit)="handleUpdate()">
+        <div class="row g-3">
+          
+          <div class="col-md-4">
+            <label class="form-label fw-bold">First Name</label>
+            <input type="text" name="fname" class="form-control" [(ngModel)]="faculty.fname" required />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Middle Name</label>
+            <input type="text" name="mname" class="form-control" [(ngModel)]="faculty.mname" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Last Name</label>
+            <input type="text" name="lname" class="form-control" [(ngModel)]="faculty.lname" required />
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Email</label>
+            <input type="email" name="email" class="form-control" [(ngModel)]="faculty.email" required />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Mobile</label>
+            <input type="text" name="mobile" class="form-control" [(ngModel)]="faculty.mobile" required />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Gender</label>
+            <select name="gender" class="form-select" [(ngModel)]="faculty.gender" required>
+              <option value="">-- Select --</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Department</label>
+            <input type="text" name="dept" class="form-control" [(ngModel)]="faculty.department" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Date of Birth</label>
+            <input type="date" name="dob" class="form-control" [(ngModel)]="faculty.dob" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Date of Joining</label>
+            <input type="date" name="doj" class="form-control" [(ngModel)]="faculty.doj" />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Education</label>
+            <input type="text" name="education" class="form-control" [(ngModel)]="faculty.education" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Username</label>
+            <input type="text" name="username" class="form-control bg-light" [(ngModel)]="faculty.username" readonly />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-bold">Address</label>
+            <textarea name="address" class="form-control" rows="2" [(ngModel)]="faculty.address"></textarea>
+          </div>
+
+        </div>
+
+        <div class="text-center mt-4">
+          <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+.main-content {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.card {
+  max-width: 900px;
+  margin: auto;
+}
+
+.form-label {
+  color: #495057;
+}
+
+.border-2 {
+  border-width: 2px !important;
+}

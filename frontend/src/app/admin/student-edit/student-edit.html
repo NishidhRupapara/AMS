@@ -1,0 +1,111 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-admin-sidebar></app-admin-sidebar>
+  <div class="main-content flex-grow-1 p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 shadow-sm rounded">
+      <h3 class="mb-0 text-warning fw-bold">✏️ Edit Student Profile</h3>
+      <a [routerLink]="['/student/view', studentId]" class="btn btn-secondary fw-bold">🔙 Cancel</a>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-warning" role="status"></div>
+      <p class="mt-2 fw-bold text-muted">Fetching Student Data...</p>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3 p-4" *ngIf="!isLoading && student">
+      <form (ngSubmit)="updateStudent()">
+
+        <h5 class="text-primary border-bottom pb-2 mb-3">Academic Information</h5>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Department</label>
+            <select class="form-select border-2" name="dept" [(ngModel)]="student.department" (change)="onDepartmentChange()">
+              <option *ngFor="let d of departments" [value]="d.deptName || d.departmentName || d.DepartmentName">
+                {{ d.deptName || d.departmentName || d.DepartmentName }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Assigned Faculty</label>
+            <select class="form-select border-2" name="fac" [(ngModel)]="student.faculty_Id" [disabled]="filteredFaculties.length === 0">
+              <option value="">-- Choose Faculty --</option>
+              <option *ngFor="let f of filteredFaculties" [value]="f.fid || f._id">
+                {{ f.Fname || f.fname }} {{ f.Lname || f.lname }} (ID: {{ f.fid }})
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <h5 class="text-primary border-bottom pb-2 mt-4 mb-3">Personal Details</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">First Name</label>
+            <input type="text" class="form-control" name="fn" [(ngModel)]="student.fname" required>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Middle Name</label>
+            <input type="text" class="form-control" name="mn" [(ngModel)]="student.mname">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Last Name</label>
+            <input type="text" class="form-control" name="ln" [(ngModel)]="student.lname" required>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Gender</label>
+            <select class="form-select" name="gen" [(ngModel)]="student.gender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Date of Birth</label>
+            <input type="date" class="form-control" name="bday" [(ngModel)]="student.dob">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Date of Admission</label>
+            <input type="date" class="form-control" name="adm" [(ngModel)]="student.doa">
+          </div>
+        </div>
+
+        <h5 class="text-primary border-bottom pb-2 mt-4 mb-3">Contact Information</h5>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Email Address</label>
+            <input type="email" class="form-control" name="em" [(ngModel)]="student.email_Id" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Mobile Number</label>
+            <input type="text" class="form-control" name="mob" [(ngModel)]="student.mo_Number" required>
+          </div>
+          <div class="col-md-12 mb-3">
+            <label class="form-label fw-bold">Residential Address</label>
+            <textarea class="form-control" rows="2" name="adr" [(ngModel)]="student.address"></textarea>
+          </div>
+        </div>
+
+        <h5 class="text-primary border-bottom pb-2 mt-4 mb-3">Parent Information</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Parent Name</label>
+            <input type="text" class="form-control" name="pn" [(ngModel)]="student.parentName">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Parent Mobile</label>
+            <input type="text" class="form-control" name="pm" [(ngModel)]="student.parentMobile">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Parent Email</label>
+            <input type="email" class="form-control" name="pe" [(ngModel)]="student.parentEmail">
+          </div>
+        </div>
+
+        <div class="mt-4 text-end">
+          <button type="submit" class="btn btn-warning fw-bold px-5 shadow-sm" [disabled]="isSaving">
+            {{ isSaving ? 'Updating...' : '💾 Save Student Record' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

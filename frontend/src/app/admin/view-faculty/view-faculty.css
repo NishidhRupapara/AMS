@@ -1,0 +1,87 @@
+.admin-container {
+  display: flex;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 30px 40px;
+}
+
+.header-section {
+  margin-bottom: 20px;
+}
+
+.page-title {
+  color: #0d6efd;
+  font-weight: 500;
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e0e0;
+  overflow-x: auto;
+}
+
+.faculty-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #dee2e6;
+}
+
+.faculty-table thead th {
+  background-color: #212529;
+  color: white;
+  text-align: left;
+  padding: 12px 15px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid #373b3e;
+}
+
+.faculty-table tbody td {
+  padding: 12px 15px;
+  border: 1px solid #dee2e6;
+  color: #333;
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.faculty-table tbody tr:nth-child(even) { background-color: #f8f9fa; }
+.faculty-table tbody tr:nth-child(odd) { background-color: #ffffff; }
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.action-buttons button {
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+  font-size: 1rem;
+}
+
+.action-buttons button:hover { opacity: 0.8; }
+
+.view-btn { background-color: #0dcaf0; color: #000; }
+.edit-btn { background-color: #ffc107; color: #000; }
+.delete-btn { background-color: #dc3545; color: #fff; }
+
+.text-center { text-align: center !important; }
+.text-muted { color: #6c757d; }
+.py-4 { padding-top: 2rem; padding-bottom: 2rem; }

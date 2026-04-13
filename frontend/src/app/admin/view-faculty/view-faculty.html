@@ -1,0 +1,61 @@
+<div class="admin-container">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content">
+    <div class="header-section">
+      <h2 class="page-title">All Registered Faculty</h2>
+    </div>
+
+    <div class="table-container">
+      <table class="faculty-table">
+        <thead>
+          <tr>
+            <th style="width: 50px;">ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>DOJ</th>
+            <th>Username</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th class="text-center" style="width: 140px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="loading">
+            <td colspan="9" class="text-center py-4">
+              Loading faculty data...
+            </td>
+          </tr>
+
+          <tr *ngFor="let f of faculties; let i = index">
+            <td>{{ i + 1 }}</td>
+
+            <td>{{ getFullName(f) }}</td>
+            <td>{{ f.Department || f.department || 'N/A' }}</td>
+            <td>{{ getDoj(f) ? (getDoj(f) | date:'MM/dd/yyyy') : 'N/A' }}</td>
+
+            <td>{{ f.Username || f.username || 'N/A' }}</td>
+            <td>{{ f.Gender || f.gender || 'N/A' }}</td>
+            <td>{{ f.Email || f.email || 'N/A' }}</td>
+            <td>{{ f.Mobile || f.mobile || 'N/A' }}</td>
+
+            <td class="action-cell text-center">
+              <div class="action-buttons">
+                <button class="view-btn" (click)="handleView(f)" title="View">👁️</button>
+                <button class="edit-btn" (click)="handleEdit(f)" title="Edit">✏️</button>
+                <button class="delete-btn" (click)="handleDelete(f)" title="Delete">🗑️</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="!loading && faculties.length === 0">
+            <td colspan="9" class="text-center py-4 text-muted">
+              No faculty records found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

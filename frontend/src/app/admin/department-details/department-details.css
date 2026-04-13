@@ -1,0 +1,10 @@
+/* Ensures the modal displays over the content when 'show' class is added */
+.modal.show.d-block {
+  display: block;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1055;
+}
+
+.modal-backdrop {
+  z-index: 1050;
+}

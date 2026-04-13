@@ -1,0 +1,55 @@
+.custom-sidebar {
+    background-color: #000000; /* Deep black background */
+    width: 260px; /* Fixed width */
+    color: #ffffff;
+    border-right: 1px solid #222; /* Slight border on the right to separate from content */
+}
+
+.tracking-wide {
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    color: #e0e0e0;
+    font-size: 15px;
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-link span {
+    display: flex;
+    align-items: center;
+}
+
+.small-arrow {
+    font-size: 0.75rem;
+    color: #666; /* Dimmed arrow color initially */
+    transition: color 0.2s;
+}
+
+/* Hover Effect */
+.nav-link:hover {
+    background-color: #1a1a1a; /* Dark grey hover */
+    color: #ffffff;
+    transform: translateX(3px); /* Slight bump to the right on hover */
+}
+
+.nav-link:hover .small-arrow {
+    color: #ffffff; /* Arrow brightens on hover */
+}
+
+/* Active Link Status */
+.active-link {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-weight: bold;
+    border-left: 3px solid #0d6efd; /* Blue strip on the left to show active page */
+}
+
+.active-link .small-arrow {
+    color: #0d6efd;
+}
+
+/* Border styling to match the dark theme */
+.border-dark {
+    border-color: #222 !important;
+}

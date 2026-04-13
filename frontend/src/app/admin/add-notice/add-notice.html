@@ -1,0 +1,69 @@
+<div class="d-flex">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <div class="d-flex justify-content-center">
+      <div class="card shadow-lg w-75 border-0 rounded-3">
+        
+        <div class="card-header bg-dark text-white d-flex align-items-center p-3">
+          <span class="me-2">➕</span>
+          <h4 class="mb-0">Add New Notice</h4>
+        </div>
+
+        <div class="card-body p-4">
+          <div *ngIf="message" class="alert alert-success shadow-sm border-0">{{ message }}</div>
+          <div *ngIf="error" class="alert alert-danger shadow-sm border-0">{{ error }}</div>
+
+          <form #noticeForm="ngForm" (ngSubmit)="noticeForm.form.valid && handleSubmit()">
+            <div class="mb-4">
+              <label for="title" class="form-label fw-bold small text-muted text-uppercase">Notice Title</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                class="form-control shadow-none border-2"
+                [class.is-invalid]="ntitle.invalid && ntitle.touched"
+                placeholder="e.g. Upcoming Holiday"
+                [(ngModel)]="title"
+                #ntitle="ngModel"
+                required
+                minlength="5"
+              />
+              <div class="invalid-feedback">A title (min 5 characters) is required.</div>
+            </div>
+
+            <div class="mb-4">
+              <label for="description" class="form-label fw-bold small text-muted text-uppercase">Notice Description</label>
+              <textarea
+                id="description"
+                name="description"
+                class="form-control shadow-none border-2"
+                [class.is-invalid]="ndesc.invalid && ndesc.touched"
+                rows="5"
+                placeholder="Enter detailed notice information..."
+                [(ngModel)]="description"
+                #ndesc="ngModel"
+                required
+                minlength="10"
+              ></textarea>
+              <div class="invalid-feedback">Details (min 10 characters) are required.</div>
+            </div>
+
+            <p class="text-muted small">
+              This notice will be posted by: <b>{{ adminName }}</b>
+            </p>
+
+            <div class="d-flex mt-4 gap-2">
+              <button type="submit" class="btn btn-primary px-5 fw-bold rounded-pill shadow" [disabled]="noticeForm.invalid">
+                💾 Post Notice
+              </button>
+              <a routerLink="/view-notices" class="btn btn-outline-secondary px-4 rounded-pill">
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

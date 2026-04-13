@@ -1,0 +1,90 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-faculty-sidebar></app-faculty-sidebar>
+  
+  <div class="main-content flex-grow-1 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4 class="text-primary mb-0"><b>📝 Take Student Attendance</b></h4>
+      <div class="badge bg-info text-dark p-2">Faculty ID: {{ facultyId }}</div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+      <div class="card-body">
+        
+        <div *ngIf="isLoading" class="text-center p-5 text-muted">
+          <div class="spinner-border text-primary mb-2" role="status"></div>
+          <p>Fetching students from database...</p>
+        </div>
+
+        <div *ngIf="!isLoading && students.length === 0" class="alert alert-warning text-center mt-3">
+          ⚠️ No students found in the database for Faculty ID: <b>{{ facultyId }}</b>.
+        </div>
+
+        <div *ngIf="!isLoading && students.length > 0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-dark">
+                <tr>
+                  <th>Roll No.</th>
+                  <th>Full Name</th>
+                  <th>Attendance Status</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let student of students">
+                  <td class="fw-bold">{{ student.id }}</td>
+                  <td>{{ student.name }}</td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <input type="radio" class="btn-check" [name]="'status_' + student.id"
+                        [id]="'present_' + student.id" value="Present" [(ngModel)]="student.status">
+                      <label class="btn btn-outline-success px-4" [for]="'present_' + student.id">Present</label>
+
+                      <input type="radio" class="btn-check" [name]="'status_' + student.id"
+                        [id]="'absent_' + student.id" value="Absent" [(ngModel)]="student.status">
+                      <label class="btn btn-outline-danger px-4" [for]="'absent_' + student.id">Absent</label>
+                    </div>
+                  </td>
+                  <td>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="student.remark"
+                      [name]="'remark_' + student.id" placeholder="Note (Optional)">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-between mt-4 border-top pt-3">
+            <div class="btn-group">
+              <button type="button" class="btn btn-success" (click)="checkAllPresent()">Mark All Present</button>
+              <button type="button" class="btn btn-danger" (click)="checkAllAbsent()">Mark All Absent</button>
+            </div>
+            <button type="button" class="btn btn-primary btn-lg px-5 shadow" (click)="handleSubmit()">
+              Finalize & Submit
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade show" [class.d-block]="showModal" tabindex="-1" *ngIf="showModal" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Success!</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <h5 class="text-success mb-3">Attendance Submitted Successfully ✅</h5>
+        <p class="text-muted">Attendance has been recorded for {{ submittedCount }} students.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Close</button>
+        <button type="button" class="btn btn-success" (click)="goToHistory()">View History</button>
+      </div>
+    </div>
+  </div>
+</div>

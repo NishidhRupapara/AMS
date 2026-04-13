@@ -1,0 +1,64 @@
+<div class="admin-container d-flex">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <h2 class="text-primary">{{ selectedFacultyId ? 'Assigned Students: ' + selectedFacultyName : 'Faculty wise Students' }}</h2>
+      <button *ngIf="selectedFacultyId" (click)="goBack()" class="btn btn-primary shadow-sm">Back to Faculty List</button>
+    </div>
+
+    <div class="row" *ngIf="!selectedFacultyId">
+      <div class="col-md-4 mb-4" *ngFor="let f of faculties">
+        <div class="card h-100 shadow-sm border-0" (click)="showStudents(f)" style="cursor: pointer; border-left: 5px solid #007bff;">
+          <div class="card-body text-center">
+             <div class="bg-light rounded-circle p-3 d-inline-block mb-3">
+                <i class="bi bi-person-badge text-primary fs-2"></i>
+             </div>
+             <h5 class="fw-bold">{{ f.fname || f.Fname }} {{ f.lname || f.Lname }}</h5>
+             <p class="text-muted small mb-0">{{ f.department || f.Department }}</p>
+             <span class="badge bg-primary mt-2">Faculty ID: {{ f.fid }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0" *ngIf="selectedFacultyId">
+      <div class="card-body p-0">
+        <div *ngIf="studentsLoading" class="text-center py-5">
+           <div class="spinner-border text-primary"></div>
+           <p class="mt-2">Loading Students...</p>
+        </div>
+
+        <table class="table table-hover mb-0" *ngIf="!studentsLoading && students.length > 0">
+          <thead class="table-dark">
+            <tr>
+              <th class="ps-4">#</th>
+              <th>Student Name</th>
+              <th>Gender</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Admission Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of students; let i = index">
+              <td class="ps-4">{{ i + 1 }}</td>
+              <td class="fw-bold">{{ s.fname || s.Fname }} {{ s.lname || s.Lname }}</td>
+              <td>{{ s.gender || s.Gender }}</td>
+              <td>{{ s.email_Id || s.Email_Id }}</td>
+              <td>{{ s.mo_Number || s.Mo_Number }}</td>
+              <td>{{ (s.doa || s.DOA) | date:'mediumDate' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div *ngIf="!studentsLoading && students.length === 0" class="text-center py-5">
+            <div class="p-4 bg-light rounded d-inline-block border">
+                <h4 class="text-muted mb-2">No students assigned to {{ selectedFacultyName }} yet.</h4>
+                <p class="small text-danger mb-0">Check: Student collection must have Faculty_Id = "{{ selectedFacultyId }}"</p>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

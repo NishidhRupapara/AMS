@@ -1,0 +1,39 @@
+.main-content {
+    background-color: #f8f9fa;
+}
+
+.reply-box {
+    background-color: #eef2ff;
+    border-left: 4px solid #4f46e5;
+}
+
+.animate-fade {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+.animate-slide {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.extra-small {
+    font-size: 0.75rem;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+}

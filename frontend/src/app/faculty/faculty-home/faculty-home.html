@@ -1,0 +1,64 @@
+<div class="dashboard-wrapper d-flex">
+  <app-faculty-sidebar></app-faculty-sidebar>
+
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <div class="card shadow-sm border-0 mb-4 p-3 d-flex flex-row justify-content-between align-items-center">
+      <h3 class="text-primary fw-bold mb-0">Welcome, {{ username }}</h3>
+      <button (click)="handleLogout()" class="btn btn-outline-danger btn-sm">
+        <i class="bi bi-box-arrow-right"></i> Logout
+      </button>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="card text-white shadow-sm border-0" style="background: #28a745;">
+          <div class="card-body">
+            <h6>Total Students</h6>
+            <h1 class="display-4 fw-bold">{{ stats.totalStudents }}</h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white shadow-sm border-0" style="background: #ffc107;">
+          <div class="card-body">
+            <h6>Total Faculty</h6>
+            <h1 class="display-4 fw-bold">{{ stats.totalFaculty }}</h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white shadow-sm border-0" style="background: #dc3545;">
+          <div class="card-body">
+            <h6>Total Departments</h6>
+            <h1 class="display-4 fw-bold">{{ stats.totalDepartments }}</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-white fw-bold">Recent Activities</div>
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th>Activity</th>
+              <th class="text-end">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let act of stats.recentActivities; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ act.activity }}</td>
+              <td class="text-end text-muted small">{{ formatDate(act.date) }}</td>
+            </tr>
+            <tr *ngIf="stats.recentActivities.length === 0">
+              <td colspan="3" class="text-center py-4 text-muted">No recent activities found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

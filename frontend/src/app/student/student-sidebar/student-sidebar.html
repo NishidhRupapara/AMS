@@ -1,0 +1,74 @@
+<div class="custom-sidebar d-flex flex-column justify-content-between vh-100 p-0 shadow">
+  <div>
+    <div class="text-center py-4 border-bottom border-dark mb-2">
+      <h4 class="mb-0 fw-bold text-white tracking-wide">Student Portal</h4>
+      <small class="text-info mt-1 d-block">{{ studentName }}</small>
+    </div>
+
+    <ul class="nav flex-column px-2 gap-1 mt-2">
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
+          routerLink="/student-home" routerLinkActive="active-link">
+          <span>🏠 &nbsp; Dashboard</span>
+          <i class="fas fa-caret-right small-arrow"></i>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
+          routerLink="/view-my-attendance" routerLinkActive="active-link">
+          <span>📅 &nbsp; My Attendance</span>
+          <i class="fas fa-caret-right small-arrow"></i>
+        </a>
+      </li>
+
+
+
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
+          routerLink="/my-assignments" routerLinkActive="active-link">
+          <span>📚 &nbsp; Assignments</span>
+          <i class="fas fa-caret-right small-arrow"></i>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
+          routerLink="/my-study-material" routerLinkActive="active-link">
+          <span>📖 &nbsp; Study Material</span>
+          <i class="fas fa-caret-right small-arrow"></i>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
+          routerLink="/student-notices" routerLinkActive="active-link">
+          <span>🔔 &nbsp; Notices</span>
+          <i class="fas fa-caret-right small-arrow"></i>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
+          routerLink="/student-suggestion" routerLinkActive="active-link">
+          <span>💡 &nbsp; Suggestions</span>
+          <i class="fas fa-caret-right small-arrow"></i>
+        </a>
+      </li>
+
+      <li class="nav-item border-top border-dark mt-2 pt-2">
+        <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
+          routerLink="/student-profile" routerLinkActive="active-link">
+          <span>👤 &nbsp; My Profile</span>
+          <i class="fas fa-caret-right small-arrow"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="p-3 border-top border-dark">
+    <button class="btn btn-danger w-100 fw-bold shadow-sm logout-btn" (click)="handleLogout()">
+      🚪 Logout
+    </button>
+  </div>
+</div>

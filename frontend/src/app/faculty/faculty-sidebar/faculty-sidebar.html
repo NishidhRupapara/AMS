@@ -1,0 +1,85 @@
+<div class="sidebar d-flex flex-column justify-content-between vh-100 p-0 shadow bg-dark">
+  <div>
+    <div class="text-center text-white py-4 border-bottom border-secondary mb-3">
+      <h5 class="mb-0 fw-bold">Attendance System</h5>
+      <small class="text-info">Welcome, {{ username }}!</small>
+    </div>
+    
+    <ul class="nav flex-column px-2 gap-1">
+      <li class="nav-item">
+        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
+           routerLink="/faculty-home" routerLinkActive="bg-primary active">
+          🏠 Dashboard
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
+           routerLink="/students" routerLinkActive="bg-primary active">
+          📘 Student Center
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
+           routerLink="/take-attendance" routerLinkActive="bg-primary active">
+          📝 Take Attendance
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
+           routerLink="/student-report" routerLinkActive="bg-primary active">
+          📊 Report
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
+           routerLink="/attendance-history" routerLinkActive="bg-primary active">
+          🕒 Attendance History
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
+           routerLink="/assignment" routerLinkActive="bg-primary active">
+          📚 Assignments
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
+           routerLink="/study-material" routerLinkActive="bg-primary active">
+          📖 Study Material
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
+           routerLink="/notice" routerLinkActive="bg-primary active">
+          📩 Notice Section
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
+           routerLink="/suggestion" routerLinkActive="bg-primary active">
+          📨 Suggestion
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
+           routerLink="/profile" routerLinkActive="bg-primary active">
+          👤 Profile
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="p-3 border-top border-secondary">
+    <button class="btn btn-outline-danger w-100 fw-bold" (click)="handleLogout()">
+      🚪 Logout
+    </button>
+  </div>
+</div>

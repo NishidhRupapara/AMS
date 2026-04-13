@@ -1,0 +1,128 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-faculty-sidebar></app-faculty-sidebar>
+
+  <div class="main-content flex-grow-1 p-5">
+    <div class="container">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white rounded-top-4 d-flex justify-content-between align-items-center py-3">
+          <h3 class="mb-0">
+            <i class="fa fa-user me-2"></i> Faculty Profile
+          </h3>
+          <button class="btn btn-light btn-sm fw-bold shadow-sm" (click)="openEditModal()" *ngIf="profile">
+            ✏️ Edit Profile
+          </button>
+        </div>
+
+        <div class="card-body p-5">
+          <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-border text-primary"></div>
+            <p class="mt-2 text-muted">⏳ Loading profile...</p>
+          </div>
+
+          <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+          <div *ngIf="!loading && !error && profile" class="row">
+            <div class="col-md-8 mx-auto">
+              <h5 class="mb-4 text-secondary border-bottom pb-2">Personal Information</h5>
+              <ul class="list-group list-group-flush shadow-sm rounded">
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted"><i class="fas fa-id-badge me-2"></i><strong>Full Name</strong></span>
+                  <span class="fw-medium">{{ (profile.fname || profile.Fname) }} {{ (profile.mname || profile.Mname) }} {{ (profile.lname || profile.Lname) }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted"><i class="fas fa-user-circle me-2"></i><strong>Username</strong></span>
+                  <span class="fw-medium">{{ profile.username || profile.Username }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted"><i class="fas fa-envelope me-2"></i><strong>Email</strong></span>
+                  <span class="fw-medium text-primary">{{ profile.email || profile.Email }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted"><i class="fas fa-phone me-2"></i><strong>Mobile</strong></span>
+                  <span class="fw-medium">{{ profile.mobile || profile.Mobile }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted"><i class="fas fa-venus-mars me-2"></i><strong>Gender</strong></span>
+                  <span class="fw-medium">{{ profile.gender || profile.Gender }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted"><i class="fas fa-building me-2"></i><strong>Department</strong></span>
+                  <span class="badge bg-info text-dark align-self-center">{{ profile.department || profile.Department }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted"><i class="fas fa-calendar-alt me-2"></i><strong>Date of Joining</strong></span>
+                  <span class="fw-medium">{{ (profile.doj || profile.Doj) | date:'longDate' }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div *ngIf="!loading && !error && !profile" class="alert alert-info text-center">
+            No profile data available.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="editing" class="modal show fade d-block modal-backdrop-custom" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content shadow-lg border-0 rounded-4">
+        <div class="modal-header bg-light border-bottom-0">
+          <h5 class="modal-title fw-bold text-primary">✏️ Edit Profile</h5>
+          <button type="button" class="btn-close" (click)="closeEditModal()"></button>
+        </div>
+        
+        <div class="modal-body p-4">
+          <form (ngSubmit)="saveProfile()">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-bold text-muted small">First Name</label>
+                <input type="text" class="form-control" name="fname" [(ngModel)]="editData.fname" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold text-muted small">Middle Name</label>
+                <input type="text" class="form-control" name="mname" [(ngModel)]="editData.mname">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold text-muted small">Last Name</label>
+                <input type="text" class="form-control" name="lname" [(ngModel)]="editData.lname" required>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-muted small">Username</label>
+                <input type="text" class="form-control" name="username" [(ngModel)]="editData.username" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-muted small">Email Address</label>
+                <input type="email" class="form-control" name="email" [(ngModel)]="editData.email" required>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-bold text-muted small">Mobile Number</label>
+                <input type="text" class="form-control" name="mobile" [(ngModel)]="editData.mobile" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold text-muted small">Gender</label>
+                <select class="form-select" name="gender" [(ngModel)]="editData.gender">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold text-muted small">Department</label>
+                <input type="text" class="form-control" name="department" [(ngModel)]="editData.department" required>
+              </div>
+            </div>
+
+            <div class="modal-footer border-top-0 px-0 pb-0 mt-4">
+              <button type="button" class="btn btn-light" (click)="closeEditModal()">Cancel</button>
+              <button type="submit" class="btn btn-success px-4 shadow-sm">✅ Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

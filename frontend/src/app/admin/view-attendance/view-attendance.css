@@ -1,0 +1,21 @@
+.hover-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.hover-card:hover {
+  transform: translateY(-8px);
+  cursor: pointer;
+}
+
+.modal.show {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.main-content {
+  background-color: #f8f9fa;
+}
+
+.badge {
+  font-size: 0.85rem;
+}

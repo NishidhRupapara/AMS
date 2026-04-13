@@ -1,0 +1,61 @@
+<div class="login-wrapper d-flex justify-content-center align-items-center min-vh-100">
+  
+  <div class="login-card bg-white shadow-lg">
+    <div class="top-accent-line"></div>
+    
+    <div class="card-body p-5">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary mb-2 text-uppercase">Admin Login</h2>
+        <p class="text-muted small">Enter credentials to access your portal</p>
+      </div>
+
+      <form #loginForm="ngForm" (ngSubmit)="loginForm.form.valid && onLogin()">
+        
+        <div class="mb-3">
+          <label class="form-label fw-bold text-dark small">Username</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white text-secondary border-end-0">
+              <i class="fas fa-user"></i>
+            </span>
+            <input 
+              type="text" 
+              name="username" 
+              [(ngModel)]="credentials.Username" 
+              #uname="ngModel"
+              class="form-control border-start-0 ps-0 shadow-none" 
+              [class.is-invalid]="uname.invalid && uname.touched"
+              placeholder="Enter username" 
+              required>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-bold text-dark small">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white text-secondary border-end-0">
+              <i class="fas fa-lock"></i>
+            </span>
+            <input 
+              type="password" 
+              name="password" 
+              [(ngModel)]="credentials.Password" 
+              #pword="ngModel"
+              class="form-control border-start-0 ps-0 shadow-none" 
+              [class.is-invalid]="pword.invalid && pword.touched"
+              placeholder="Enter password" 
+              required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold rounded-3 shadow" [disabled]="isLoading || loginForm.invalid">
+          {{ isLoading ? 'LOGGING IN...' : 'LOGIN' }}
+        </button>
+      </form>
+
+      <div class="text-center mt-4 text-muted small">
+        Not an admin? <a routerLink="/student-login" class="text-primary text-decoration-none fw-bold">Student Portal</a>
+      </div>
+
+    </div>
+  </div>
+</div>
