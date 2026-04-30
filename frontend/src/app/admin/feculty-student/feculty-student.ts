@@ -23,7 +23,7 @@ export class FecultyStudentComponent implements OnInit {
   ngOnInit() { this.fetchFaculties(); }
 
   fetchFaculties() {
-    this.http.get<any[]>('http://127.0.0.1:5139/api/Faculty/all').subscribe({
+    this.http.get<any[]>('http://localhost:5139/api/Faculty/all').subscribe({
       next: (data: any) => {
         this.faculties = Array.isArray(data) ? data : (data?.data || []);
         this.loading = false;
@@ -47,7 +47,7 @@ export class FecultyStudentComponent implements OnInit {
       this.cdr.detectChanges();
     });
 
-    this.http.get<any[]>(`http://127.0.0.1:5139/api/Student/${targetId}/students`).subscribe({
+    this.http.get<any[]>(`http://localhost:5139/api/Student/${targetId}/students`).subscribe({
       next: (res) => {
         this.zone.run(() => {
           this.students = Array.isArray(res) ? res : (res as any).data || [];

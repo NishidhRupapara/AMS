@@ -16,7 +16,7 @@ export class AddFacultyComponent implements OnInit {
   formData: any = {
     Fname: "", Mname: "", Lname: "", Gender: "", Dob: "", Doj: "",
     Department: "", Username: "", Password: "", ConfirmPassword: "", Email: "",
-    Mobile: "", AltEmail: "", EmergencyPhone: "", Education: "", Address: ""
+    Mobile: "", AltEmail: "", EmergencyPhone: "", Education: "", Address: "", ImageUrl: ""
   };
 
   departments: any[] = [];
@@ -32,7 +32,7 @@ export class AddFacultyComponent implements OnInit {
   }
 
   fetchDepartments() {
-    this.http.get<any[]>("http://127.0.0.1:5139/api/Departments/Dall").subscribe({
+    this.http.get<any[]>("http://localhost:5139/api/Departments/Dall").subscribe({
       next: (res) => {
         this.departments = res;
         this.cdr.detectChanges(); 
@@ -53,7 +53,7 @@ export class AddFacultyComponent implements OnInit {
       this.cdr.detectChanges();
       return;
     }
-    this.http.post("http://127.0.0.1:5139/api/Faculty/register", this.formData).subscribe({
+    this.http.post("http://localhost:5139/api/Faculty/register", this.formData).subscribe({
       next: () => {
         this.feedback = { type: "success", msg: "✅ Faculty Added Successfully!" };
         this.resetForm();
@@ -76,7 +76,7 @@ export class AddFacultyComponent implements OnInit {
     this.formData = {
       Fname: "", Mname: "", Lname: "", Gender: "", Dob: "", Doj: "",
       Department: "", Username: "", Password: "", ConfirmPassword: "", Email: "",
-      Mobile: "", AltEmail: "", EmergencyPhone: "", Education: "", Address: ""
+      Mobile: "", AltEmail: "", EmergencyPhone: "", Education: "", Address: "", ImageUrl: ""
     };
   }
 }

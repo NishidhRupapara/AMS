@@ -14,15 +14,23 @@
     <table *ngIf="!loading" class="table table-striped table-bordered shadow-sm bg-white">
       <thead class="table-dark">
         <tr>
-          <th>Department ID</th>
+          <th>#</th>
+          <th>Image</th>
           <th>Department Name</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let dep of departments">
-          <td>{{ dep.did }}</td>
-          <td>{{ dep.departmentName }}</td>
+        <tr *ngFor="let dep of departments; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>
+            <img [src]="dep.imageUrl || dep.ImageUrl || 'https://ui-avatars.com/api/?name=' + (dep.departmentName || 'D') + '&background=random'" 
+                 (error)="$any($event.target).src = 'https://ui-avatars.com/api/?name=' + (dep.departmentName || 'D') + '&background=random'"
+                 class="rounded-circle shadow-sm" 
+                 style="width: 40px; height: 40px; object-fit: cover;" 
+                 alt="Pic">
+          </td>
+          <td>{{ dep.departmentName || dep.DepartmentName }}</td>
           <td>
             <button (click)="handleView(dep.did)" class="btn btn-primary btn-sm me-2">
               <i class="fa fa-eye"></i>
@@ -36,7 +44,7 @@
           </td>
         </tr>
         <tr *ngIf="departments.length === 0">
-          <td colspan="3" class="text-center text-danger">No Departments Found</td>
+          <td colspan="4" class="text-center text-danger">No Departments Found</td>
         </tr>
       </tbody>
     </table>
@@ -49,7 +57,14 @@
           <h5 class="modal-title">Department Details</h5>
           <button type="button" class="btn-close" (click)="closeModals()"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body text-center">
+          <div class="mb-3">
+            <img [src]="selectedDept.imageUrl || selectedDept.ImageUrl || 'https://ui-avatars.com/api/?name=' + (selectedDept.departmentName || 'D') + '&background=random'" 
+                 (error)="$any($event.target).src = 'https://ui-avatars.com/api/?name=' + (selectedDept.departmentName || 'D') + '&background=random'"
+                 class="rounded-circle shadow" 
+                 style="width: 100px; height: 100px; object-fit: cover;" 
+                 alt="Department Logo">
+          </div>
           <p><strong>ID:</strong> {{ selectedDept.did }}</p>
           <p><strong>Name:</strong> {{ selectedDept.departmentName }}</p>
         </div>
@@ -68,9 +83,20 @@
           <button type="button" class="btn-close" (click)="closeModals()"></button>
         </div>
         <div class="modal-body">
+          <div class="text-center mb-4">
+            <img [src]="selectedDept.imageUrl || selectedDept.ImageUrl || 'https://ui-avatars.com/api/?name=' + (selectedDept.departmentName || 'D') + '&background=random'" 
+                 (error)="$any($event.target).src = 'https://ui-avatars.com/api/?name=' + (selectedDept.departmentName || 'D') + '&background=random'"
+                 class="rounded-circle shadow" 
+                 style="width: 100px; height: 100px; object-fit: cover;" 
+                 alt="Department Logo">
+          </div>
           <div class="mb-3">
             <label class="form-label">Department Name</label>
             <input type="text" class="form-control" [(ngModel)]="selectedDept.departmentName">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Image URL</label>
+            <input type="text" class="form-control" [(ngModel)]="selectedDept.imageUrl" placeholder="Optional URL">
           </div>
         </div>
         <div class="modal-footer">

@@ -36,9 +36,14 @@
 }
 
 /* Hover and Active states */
-.sidebar .nav-link:hover, 
-.sidebar .nav-link.active {
+.sidebar .nav-link:hover {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .nav-link.active-link,
+.sidebar .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-left: 3px solid #0d6efd;
 }
 
 /* Submenu Container Animation */
@@ -70,6 +75,12 @@
 .submenu-item:hover {
   color: #ffffff;
   padding-left: 50px; 
+}
+
+.submenu-item.sub-active {
+  color: #0d6efd !important;
+  font-weight: 600;
+  padding-left: 50px;
 }
 
 /* The Triangle/Arrow Icon */

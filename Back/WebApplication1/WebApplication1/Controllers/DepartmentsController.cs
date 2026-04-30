@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using WebApplication1.Models;
 
@@ -12,7 +12,7 @@ namespace WebApplication1.Controllers
 
         public DepartmentsController(IConfiguration config)
         {
-            var client = new MongoClient(config["MongoDB:Connectionstring"]);
+            var client = new MongoClient(config["MongoDB:ConnectionString"]);
             var db = client.GetDatabase(config["MongoDB:Database"]);
             _Departments = db.GetCollection<Departments>("Department");
         }
@@ -68,7 +68,8 @@ namespace WebApplication1.Controllers
                 return NotFound(new { message = "Department not found" });
 
             var update = Builders<Departments>.Update
-                .Set(d => d.DepartmentName, updatedDepartment.DepartmentName);
+                .Set(d => d.DepartmentName, updatedDepartment.DepartmentName)
+                .Set(d => d.ImageUrl, updatedDepartment.ImageUrl);
 
             _Departments.UpdateOne(d => d.Did == id, update);
 

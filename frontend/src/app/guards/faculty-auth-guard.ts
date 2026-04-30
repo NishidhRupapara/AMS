@@ -32,9 +32,10 @@ const allowedRoutes = [
   '/suggestion',// 👈 Add this line!
   '/profile', // 👈 Add this line for the profile page
   '/faculty-leave',
-  '/exam-marks', // 👈 Add this line for the exam marks page
   '/study-material',
-  '/assignment'
+  '/assignment',
+  '/exam-creation',
+  '/exam-students'
 ];
   const isAllowed = allowedRoutes.some(path => state.url.includes(path));
 

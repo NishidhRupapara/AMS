@@ -1,29 +1,27 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar';
 
 @Component({
   selector: 'app-view-attendance',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, RouterModule, AdminSidebarComponent],
   templateUrl: './view-attendance.html',
   styleUrls: ['./view-attendance.css']
 })
 export class ViewAttendanceComponent implements OnInit {
-  currentStep: number = 1;
-  isLoading: boolean = true;
-
-  departments: any[] = [];
-  allFaculties: any[] = [];
-  filteredFaculties: any[] = [];
   attendanceRecords: any[] = [];
+  filteredRecords: any[] = [];
+  isLoading: boolean = false;
+  
+  // Search Filters
+  searchText: string = '';
+  searchCategory: string = 'all'; // all, student, teacher, department, status
 
-  selectedDepartment: any = null;
-  selectedFaculty: any = null;
-
+  // Edit Modal
   showEditModal: boolean = false;
   recordToEdit: any = null;
 
@@ -32,153 +30,95 @@ export class ViewAttendanceComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
-    private location: Location,
-    private zone: NgZone // 🚀 ULTIMATE FIX FOR THE "CLICK" PROBLEM
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
-    this.fetchInitialData();
+    this.fetchAllAttendance();
   }
 
-  fetchInitialData(): void {
+  fetchAllAttendance(): void {
     this.isLoading = true;
-    this.http.get<any>(`${this.apiUrl}/Departments/Dall`).subscribe({
-      next: (depts) => {
+    this.http.get<any[]>(`${this.apiUrl}/Admin/history`).subscribe({
+      next: (data) => {
         this.zone.run(() => {
-          this.departments = Array.isArray(depts) ? depts : (depts?.data || []);
-
-          this.http.get<any>(`${this.apiUrl}/Faculty/all`).subscribe({
-            next: (facs) => {
-              this.zone.run(() => {
-                this.allFaculties = Array.isArray(facs) ? facs : (facs?.data || []);
-                this.isLoading = false;
-                this.cdr.detectChanges();
-              });
-            },
-            error: (err) => {
-              console.error("Error fetching faculties:", err);
-              this.zone.run(() => { this.isLoading = false; this.cdr.detectChanges(); });
-            }
-          });
+          this.attendanceRecords = data;
+          this.filteredRecords = data;
+          this.isLoading = false;
+          this.cdr.detectChanges();
         });
       },
       error: (err) => {
-        console.error("Error fetching departments:", err);
-        this.zone.run(() => { this.isLoading = false; this.cdr.detectChanges(); });
+        console.error("Fetch failed", err);
+        this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
 
-  goToFaculties(dept: any): void {
-    this.zone.run(() => {
-      this.selectedDepartment = dept;
-      const targetDeptName = (dept.departmentName || dept.DepartmentName || dept.deptName || dept.DeptName || dept.name || dept.Name || "").toLowerCase().trim();
+  handleSearch(): void {
+    if (!this.searchText.trim()) {
+      this.filteredRecords = this.attendanceRecords;
+      return;
+    }
 
-      this.filteredFaculties = this.allFaculties.filter(f => {
-        const facDeptName = (f.department || f.Department || "").toLowerCase().trim();
-        return facDeptName === targetDeptName || targetDeptName.includes(facDeptName) || facDeptName.includes(targetDeptName);
-      });
+    const term = this.searchText.toLowerCase().trim();
+    
+    this.filteredRecords = this.attendanceRecords.filter(item => {
+      const student = (item.fullname || '').toLowerCase();
+      const teacher = (item.facultyName || '').toLowerCase();
+      const dept = (item.department || '').toLowerCase();
+      const status = (item.status || '').toLowerCase();
 
-      this.currentStep = 2;
-      this.cdr.detectChanges();
-    });
-  }
-
-  goToAttendance(faculty: any): void {
-    this.zone.run(() => {
-      this.selectedFaculty = faculty;
-
-      // 🚀 Use 'fid' if available, else fallback to 'id'
-      const targetId = (faculty.fid && faculty.fid !== 0) ? faculty.fid.toString() : (faculty.id || faculty.Id || faculty._id);
-
-      this.isLoading = true;
-      this.http.get<any[]>(`${this.apiUrl}/Student/history/${targetId}`).subscribe({
-        next: (data) => {
-          this.zone.run(() => {
-            this.attendanceRecords = data;
-            this.currentStep = 3;
-            this.isLoading = false;
-            this.cdr.detectChanges();
-          });
-        },
-        error: (err) => {
-          console.error("Error fetching attendance", err);
-          this.zone.run(() => { this.isLoading = false; this.cdr.detectChanges(); });
-        }
-      });
-    });
-  }
-
-  goBack(): void {
-    this.zone.run(() => {
-      if (this.currentStep === 3) {
-        this.currentStep = 2;
-      } else if (this.currentStep === 2) {
-        this.currentStep = 1;
-        this.filteredFaculties = [];
-      } else {
-        this.location.back();
-      }
-      this.cdr.detectChanges();
+      if (this.searchCategory === 'student') return student.includes(term);
+      if (this.searchCategory === 'teacher') return teacher.includes(term);
+      if (this.searchCategory === 'department') return dept.includes(term);
+      if (this.searchCategory === 'status') return status.includes(term);
+      
+      // 'all' search
+      return student.includes(term) || teacher.includes(term) || dept.includes(term) || status.includes(term);
     });
   }
 
   openEditModal(record: any): void {
-    this.zone.run(() => {
-      this.recordToEdit = {
-        id: record.id || record.Id,
-        studentName: record.studentName || record.StudentName || record.fullname || record.FullName,
-        status: record.status || record.Status || 'Present',
-        remark: record.remark || record.Remark || '',
-        date: record.date || record.Date
-      };
-      this.showEditModal = true;
-      this.cdr.detectChanges();
-    });
+    this.recordToEdit = { ...record };
+    this.showEditModal = true;
   }
 
   closeEditModal(): void {
-    this.zone.run(() => {
-      this.showEditModal = false;
-      this.recordToEdit = null;
-      this.cdr.detectChanges();
-    });
+    this.showEditModal = false;
+    this.recordToEdit = null;
   }
 
   updateRecord(): void {
     if (!this.recordToEdit) return;
-    const targetId = this.selectedFaculty.id || this.selectedFaculty.Id || this.selectedFaculty.fid;
 
     const payload = {
       Status: this.recordToEdit.status,
       Remark: this.recordToEdit.remark,
-      FacultyId: String(targetId),
+      FacultyId: String(this.recordToEdit.facultyId),
       Date: this.recordToEdit.date ? new Date(this.recordToEdit.date).toISOString() : new Date().toISOString()
     };
 
     this.http.put(`${this.apiUrl}/Admin/history/${this.recordToEdit.id}`, payload).subscribe({
       next: () => {
-        this.zone.run(() => {
-          alert("✅ Record updated successfully!");
-          this.closeEditModal();
-          this.goToAttendance(this.selectedFaculty);
-        });
+        alert("✅ Record updated successfully!");
+        this.closeEditModal();
+        this.fetchAllAttendance();
       },
       error: (err) => {
         console.error("Update failed", err);
-        alert("🚨 UPDATE FAILED");
+        alert("🚨 Update failed");
       }
     });
   }
 
   deleteRecord(recordId: string): void {
-    if (confirm("⚠️ Permanently delete this record?")) {
+    if (confirm("⚠️ Delete this record?")) {
       this.http.delete(`${this.apiUrl}/Admin/history/${recordId}`).subscribe({
         next: () => {
-          this.zone.run(() => {
-            alert("✅ Deleted!");
-            this.goToAttendance(this.selectedFaculty);
-          });
+          alert("✅ Deleted!");
+          this.fetchAllAttendance();
         },
         error: (err) => console.error("Delete failed", err)
       });

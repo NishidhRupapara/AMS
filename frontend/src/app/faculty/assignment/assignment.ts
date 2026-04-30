@@ -23,7 +23,9 @@ export class AssignmentComponent implements OnInit {
     title: '',
     description: '',
     dueDate: '',
-    referenceLink: ''
+    referenceLink: '',
+    fileName: '',
+    fileData: ''
   };
 
   departments: any[] = [];
@@ -35,6 +37,18 @@ export class AssignmentComponent implements OnInit {
     const rawFid = sessionStorage.getItem("sessionFid");
     this.facultyId = rawFid ? rawFid.replace(/['"]/g, '').trim() : null;
     this.fetchDepartments();
+  }
+
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.form.fileName = file.name;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.form.fileData = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   fetchDepartments(): void {
@@ -58,24 +72,39 @@ export class AssignmentComponent implements OnInit {
 
   onSubmit(): void {
     if (!this.form.department || !this.form.subject || !this.form.title || !this.form.dueDate) {
-      this.feedback = { type: 'danger', msg: 'Please fill all required fields.' };
+      this.feedback = { type: 'danger', msg: 'Please fill required fields.' };
       return;
     }
 
     const payload = {
       FacultyId: this.facultyId,
-      ...this.form
+      Department: this.form.department,
+      Subject: this.form.subject,
+      Title: this.form.title,
+      Description: this.form.description,
+      Deadline: this.form.dueDate,
+      ReferenceLink: this.form.referenceLink,
+      FileName: this.form.fileName,
+      FileData: this.form.fileData
     };
 
     this.http.post("http://localhost:5139/api/Faculty/post-assignment", payload)
       .subscribe({
         next: (res: any) => {
           this.feedback = { type: 'success', msg: res.message };
-          this.form = { department: '', subject: '', title: '', description: '', dueDate: '', referenceLink: '' }; 
+          this.form = { department: '', subject: '', title: '', description: '', dueDate: '', referenceLink: '', fileName: '', fileData: '' }; 
           this.cdr.detectChanges();
         },
         error: () => this.feedback = { type: 'danger', msg: 'Failed to post assignment.' }
       });
+  }
+
+  downloadFile(assignment: any): void {
+    if (!assignment.fileData && !assignment.FileData) return;
+    const link = document.createElement('a');
+    link.href = assignment.fileData || assignment.FileData;
+    link.download = assignment.fileName || assignment.FileName || 'assignment';
+    link.click();
   }
 
   fetchMyAssignments(): void {

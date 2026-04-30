@@ -1,0 +1,102 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4">
+    <div class="portal-header p-4 rounded-4 shadow-sm bg-gradient-dark text-white mb-4">
+      <h2 class="fw-bold mb-0">Faculty Leave Requests</h2>
+      <p class="mb-0 opacity-75">Review and manage leave applications from teaching staff</p>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <div *ngIf="!isLoading" class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th class="ps-4">Faculty</th>
+              <th>Type</th>
+              <th>Duration</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th class="text-end pe-4">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let l of leaves">
+              <td class="ps-4">
+                <div class="fw-bold text-dark">{{ l.facultyName }}</div>
+                <small class="text-muted">Applied: {{ l.appliedOn | date:'shortDate' }}</small>
+              </td>
+              <td><span class="badge bg-info-subtle text-info">{{ l.leaveType }}</span></td>
+              <td>
+                <div class="small">
+                  <span class="d-block text-success">From: {{ l.fromDate | date:'mediumDate' }}</span>
+                  <span class="d-block text-danger">To: {{ l.toDate | date:'mediumDate' }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="text-truncate" style="max-width: 200px;" [title]="l.reason">
+                  {{ l.reason }}
+                </div>
+              </td>
+              <td>
+                <span class="badge" 
+                      [ngClass]="{
+                        'bg-warning text-dark': l.status === 'Pending',
+                        'bg-success': l.status === 'Approved',
+                        'bg-danger': l.status === 'Rejected'
+                      }">
+                  {{ l.status }}
+                </span>
+              </td>
+              <td class="text-end pe-4">
+                <button class="btn btn-sm btn-dark rounded-pill px-3" (click)="openDecisionModal(l)" data-bs-toggle="modal" data-bs-target="#leaveModal">
+                  Review
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="leaves.length === 0">
+              <td colspan="6" class="text-center py-5 text-muted">No leave requests found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decision Modal -->
+  <div class="modal fade" id="leaveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <div class="modal-header bg-dark text-white rounded-top-4">
+          <h5 class="modal-title fw-bold">Review Leave Request</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4" *ngIf="selectedLeave">
+          <div class="mb-3">
+            <label class="text-uppercase x-small fw-bold text-muted d-block">Reason</label>
+            <p class="mb-0 text-dark">{{ selectedLeave.reason }}</p>
+          </div>
+          <div class="mb-3">
+            <label class="text-uppercase x-small fw-bold text-muted d-block">Admin Remark</label>
+            <textarea class="form-control bg-light border-0" rows="3" [(ngModel)]="adminRemark" placeholder="Enter your comments..."></textarea>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-success flex-grow-1 py-2 fw-bold rounded-pill" (click)="updateStatus('Approved')" data-bs-dismiss="modal">Approve</button>
+            <button class="btn btn-danger flex-grow-1 py-2 fw-bold rounded-pill" (click)="updateStatus('Rejected')" data-bs-dismiss="modal">Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-gradient-dark { background: linear-gradient(135deg, #1a1e21 0%, #343a40 100%); }
+  .x-small { font-size: 0.7rem; letter-spacing: 0.5px; }
+  .animate-fade { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>

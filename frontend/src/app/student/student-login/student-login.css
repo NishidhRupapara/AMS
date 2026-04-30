@@ -1,26 +1,63 @@
-.login-bg {
-    background-color: #f1f5f9;
+.login-wrapper {
+  background-color: #f8f9fa;
+  min-height: 100vh;
 }
 
-.animate-fade {
-    animation: fadeIn 0.4s ease-in-out;
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: none;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+.top-accent-line {
+  height: 5px;
+  background-color: #6f42c1; /* Purple for Student */
+  width: 100%;
+}
+
+.login-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.text-purple {
+  color: #6f42c1;
 }
 
 .input-group-text {
-    border-color: #ced4da;
+  border-color: #dee2e6;
 }
 
-.form-control:focus {
-    border-color: #ced4da; /* Keep border color uniform with the icon span */
-    box-shadow: none;
+.form-control {
+  border-color: #dee2e6;
+  font-size: 15px;
 }
 
-.input-group:focus-within {
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
-    border-radius: 0.375rem;
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .form-control {
+  border-color: #6f42c1;
+  box-shadow: none;
+}
+
+.btn-purple {
+  background-color: #6f42c1;
+  color: white;
+  border: none;
+  letter-spacing: 0.5px;
+}
+
+.btn-purple:hover {
+  background-color: #59359a;
+  color: white;
+}
+
+.animate-fade {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

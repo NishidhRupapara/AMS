@@ -1,26 +1,57 @@
-.login-container {
-  height: 100vh;
-  background-color: #f4f7f6;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.login-wrapper {
+  background-color: #f8f9fa;
+  min-height: 100vh;
 }
 
-.card {
-  border-top: 5px solid #0d6efd !important;
-}
-
-.form-control:focus {
-  box-shadow: none;
-  border-color: #0d6efd;
-  background-color: #fff !important;
-}
-
-.btn-primary {
-  background-color: #0d6efd;
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 8px;
+  overflow: hidden;
   border: none;
-  transition: 0.3s;
 }
 
-.btn-primary:hover {
-  background-color: #0a58ca;
-  letter-spacing: 1px;
+.top-accent-line {
+  height: 5px;
+  background-color: #198754; /* Success Green for Faculty */
+  width: 100%;
+}
+
+.login-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.input-group-text {
+  border-color: #dee2e6;
+}
+
+.form-control {
+  border-color: #dee2e6;
+  font-size: 15px;
+}
+
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .form-control {
+  border-color: #198754;
+  box-shadow: none;
+}
+
+.btn-success {
+  background-color: #198754;
+  border: none;
+  letter-spacing: 0.5px;
+}
+
+.btn-success:hover {
+  background-color: #157347;
+}
+
+.animate-fade {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

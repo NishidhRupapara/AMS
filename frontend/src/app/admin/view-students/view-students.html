@@ -17,7 +17,7 @@
         <table class="table table-hover table-striped mb-0 text-center align-middle">
           <thead class="table-dark">
             <tr>
-              <th>ID / Roll No</th>
+              <th>#</th>
               <th>Name</th>
               <th>Department</th>
               <th>Mobile</th>
@@ -26,15 +26,21 @@
           </thead>
 
           <tbody>
-            <tr *ngFor="let s of students">
+            <tr *ngFor="let s of students; let i = index">
 
               <td class="fw-bold text-muted">
-                {{ s.studentId || s.sid || s.Sid || (s._id | slice:0:8) || 'No ID' }}
+                {{ i + 1 }}
               </td>
 
-              <td class="fw-bold">
-                {{ s.fname || s.Fname || s.firstName || s.FirstName || s.fullname || 'Unnamed' }}
-                {{ s.lname || s.Lname || s.lastName || s.LastName || '' }}
+              <td class="fw-bold d-flex align-items-center gap-3">
+                <img [src]="s.imageUrl || s.ImageUrl || 'https://ui-avatars.com/api/?name=' + (s.fname || s.Fname || s.firstName || 'Student') + '&background=random'" 
+                     class="rounded-circle shadow-sm" 
+                     style="width: 40px; height: 40px; object-fit: cover;" 
+                     alt="Pic">
+                <div>
+                  {{ s.fname || s.Fname || s.firstName || s.FirstName || s.fullname || 'Unnamed' }}
+                  {{ s.lname || s.Lname || s.lastName || s.LastName || '' }}
+                </div>
               </td>
 
               <td>

@@ -1,0 +1,2 @@
+.assignment-card { transition: transform 0.2s; cursor: default; }
+.assignment-card:hover { transform: translateY(-5px); }

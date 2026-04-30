@@ -16,7 +16,7 @@ export class ViewFacultyComponent implements OnInit {
   faculties: any[] = [];
   loading: boolean = true;
 
-  private apiUrl = "http://127.0.0.1:5139/api/Faculty";
+  private apiUrl = "http://localhost:5139/api/Faculty";
 
   constructor(
     private http: HttpClient,

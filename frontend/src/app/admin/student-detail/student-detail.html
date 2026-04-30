@@ -3,12 +3,18 @@
   <div class="main-content flex-grow-1 p-4 bg-light">
     <h3 class="text-primary mb-4">Student Details</h3>
 
-    <div *ngIf="loading" class="text-center mt-4">
+    <div *ngIf="isLoading" class="text-center mt-4">
       <div class="spinner-border text-primary" role="status"></div>
       <p>Loading student data...</p>
     </div>
 
-    <div *ngIf="!loading && student" class="card shadow p-4">
+    <div *ngIf="!isLoading && student" class="card shadow p-4">
+      <div class="text-center mb-3">
+        <img [src]="student.imageUrl || student.ImageUrl || 'https://ui-avatars.com/api/?name=' + (student.fname || student.Fname) + '&background=random'" 
+             class="rounded-circle shadow" 
+             style="width: 120px; height: 120px; object-fit: cover;" 
+             alt="Student Image">
+      </div>
       <h5 class="mb-3 text-center text-success fw-bold">
         {{ student.fname || student.Fname }} {{ student.mname || student.Mname }} {{ student.lname || student.Lname }}
       </h5>
@@ -17,8 +23,8 @@
           <tr><th style="width: 30%;">Student ID</th><td>{{ student.sid || student.Sid || student.id || student.Id || student._id }}</td></tr>
           <tr><th>Faculty ID</th><td>{{ student.faculty_Id || student.Faculty_Id }}</td></tr>
           <tr><th>Gender</th><td>{{ student.gender || student.Gender }}</td></tr>
-          <tr><th>Date of Birth</th><td>{{ formatDate(student.dob || student.Dob) }}</td></tr>
-          <tr><th>Date of Admission</th><td>{{ formatDate(student.doa || student.Doa) }}</td></tr>
+          <tr><th>Date of Birth</th><td>{{ (student.dob || student.Dob) | date:'mediumDate' }}</td></tr>
+          <tr><th>Date of Admission</th><td>{{ (student.doa || student.Doa) | date:'mediumDate' }}</td></tr>
           <tr><th>Email</th><td>{{ student.email_Id || student.Email_Id }}</td></tr>
           <tr><th>Mobile</th><td>{{ student.mo_Number || student.Mo_Number }}</td></tr>
           <tr><th>Address</th><td>{{ student.address || student.Address }}</td></tr>
@@ -33,7 +39,7 @@
       </div>
     </div>
 
-    <div *ngIf="!loading && !student" class="alert alert-danger mt-3 shadow-sm text-center">
+    <div *ngIf="!isLoading && !student" class="alert alert-danger mt-3 shadow-sm text-center">
       <h5 class="mb-1">⚠️ Student Not Found</h5>
       <p class="mb-0">We couldn't load this student's data. Please check your backend connection or go back to the list.</p>
       <a routerLink="/view-students" class="btn btn-dark mt-3">Return to Students</a>

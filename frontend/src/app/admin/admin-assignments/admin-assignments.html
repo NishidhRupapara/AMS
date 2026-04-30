@@ -1,0 +1,67 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4">
+    <div class="portal-header p-4 rounded-4 shadow-sm bg-gradient-dark text-white mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="fw-bold mb-0">Global Assignments</h2>
+          <p class="mb-0 opacity-75">Overview of all student assignments posted by faculty</p>
+        </div>
+        <div class="badge bg-light text-dark px-3 py-2 rounded-pill fw-bold">
+          Total: {{ assignments.length }}
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <div *ngIf="!isLoading" class="row g-4 animate-fade">
+      <div class="col-md-6 col-lg-4" *ngFor="let a of assignments">
+        <div class="card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between mb-3">
+              <span class="badge bg-primary-soft text-primary px-3 rounded-pill">{{ a.department }}</span>
+              <button class="btn btn-sm btn-outline-danger border-0 rounded-circle" (click)="deleteAssignment(a.id || a.Id)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <h5 class="fw-bold text-dark mb-2">{{ a.title }}</h5>
+            <p class="text-muted small mb-3 text-truncate-3">{{ a.description }}</p>
+            
+            <div class="vstack gap-2 small text-secondary">
+              <div class="hstack gap-2">
+                <i class="far fa-user text-primary"></i>
+                <span>Subject: {{ a.subject }}</span>
+              </div>
+              <div class="hstack gap-2">
+                <i class="far fa-calendar-alt text-danger"></i>
+                <span>Deadline: {{ a.deadline | date:'mediumDate' }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-light border-0 px-4 py-3">
+             <a *ngIf="a.referenceLink" [href]="a.referenceLink" target="_blank" class="btn btn-sm btn-dark w-100 rounded-pill fw-bold">
+               <i class="fas fa-external-link-alt me-1"></i> Reference Link
+             </a>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="assignments.length === 0" class="col-12 text-center py-5 text-muted">
+        <i class="fas fa-folder-open fa-3x mb-3"></i>
+        <p>No assignments have been posted yet.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-gradient-dark { background: linear-gradient(135deg, #1a1e21 0%, #343a40 100%); }
+  .bg-primary-soft { background-color: rgba(13, 110, 253, 0.1); }
+  .text-truncate-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .animate-fade { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+</style>

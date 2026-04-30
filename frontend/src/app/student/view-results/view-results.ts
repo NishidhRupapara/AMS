@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { StudentSidebarComponent } from '../student-sidebar/student-sidebar';
@@ -15,7 +15,11 @@ export class ViewResultsComponent implements OnInit {
   studentName: string = '';
   isLoading: boolean = true;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
+  ) {}
 
   ngOnInit(): void {
     this.studentName = sessionStorage.getItem("sessionStudentName") || 'Student';
@@ -26,23 +30,23 @@ export class ViewResultsComponent implements OnInit {
   }
 
   fetchResults(sid: string) {
-    // We point to your Student controller. 
-    // If you don't have a results table yet, you can point this to a dummy JSON or your existing attendance to test layout
-    this.http.get<any[]>(`http://localhost:5139/api/Student/my-results/${sid}`)
+    this.isLoading = true;
+    this.http.get<any[]>(`http://localhost:5139/api/Exam/results/student/${sid}`)
       .subscribe({
         next: (data) => {
-          this.results = data;
+          this.results = data.map(r => ({
+            subject: r.subject || r.Subject || r.examType || r.ExamType || 'Unknown',
+            marksObtained: r.marksObtained !== undefined ? r.marksObtained : (r.MarksObtained !== undefined ? r.MarksObtained : 0),
+            totalMarks: r.totalMarks || r.TotalMarks || 100,
+            date: r.dateEntered || r.DateEntered || new Date()
+          }));
           this.isLoading = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error("Error fetching results", err);
           this.isLoading = false;
-          // Dummy data for demonstration if DB endpoint isn't ready
-          this.results = [
-            { subject: 'Data Structures', totalMarks: 100, marksObtained: 85, grade: 'A', status: 'Pass' },
-            { subject: 'Web Technologies', totalMarks: 100, marksObtained: 92, grade: 'O', status: 'Pass' },
-            { subject: 'Database Management', totalMarks: 100, marksObtained: 78, grade: 'B', status: 'Pass' }
-          ];
+          this.cdr.detectChanges();
         }
       });
   }

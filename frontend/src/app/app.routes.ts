@@ -31,6 +31,10 @@ import { SuggestionComponent } from './admin/suggestion/suggestion';
 import { ViewAttendanceComponent } from './admin/view-attendance/view-attendance';
 import { EditAttendanceComponent } from './admin/edit-attendance/edit-attendance';
 import { AttendanceDetailComponent } from './admin/attendance-detail/attendance-detail';
+import { AdminExamComponent } from './admin/admin-exam/admin-exam';
+import { AdminLeavesComponent } from './admin/admin-leaves/admin-leaves';
+import { AdminAssignmentsComponent } from './admin/admin-assignments/admin-assignments';
+import { AdminMaterialsComponent } from './admin/admin-materials/admin-materials';
 
 // 👨‍🏫 Faculty Pages
 import { FacultyHomeComponent } from './faculty/faculty-home/faculty-home';
@@ -42,9 +46,10 @@ import { FacultyNoticeComponent } from './faculty/faculty-notice/faculty-notice'
 import { FacultySuggestionComponent } from './faculty/faculty-suggestion/faculty-suggestion';
 import { FacultyProfileComponent } from './faculty/faculty-profile/faculty-profile'; 
 import { FacultyLeaveComponent } from './faculty/faculty-leave/faculty-leave';
-import { ExamMarksComponent } from './faculty/exam-marks/exam-marks';
 import { StudyMaterialComponent } from './faculty/study-material/study-material';
 import { AssignmentComponent } from './faculty/assignment/assignment';
+import { FacultyExamComponent } from './faculty/faculty-exam/faculty-exam';
+import { FacultyExamStudentsComponent } from './faculty/faculty-exam-students/faculty-exam-students';
 
 // 🎓 Student Pages
 import { StudentHomeComponent } from './student/student-home/student-home'; 
@@ -55,8 +60,15 @@ import { ViewStudyMaterialComponent } from './student/view-study-material/view-s
 import { StudentProfileComponent } from './student/student-profile/student-profile';
 import { StudentNoticesComponent } from './student/student-notices/student-notices';
 import { StudentSuggestionComponent } from './student/student-suggestion/student-suggestion';
+import { StudentExamComponent } from './student/student-exam/student-exam';
+import { LandingPageComponent } from './landing-page/landing-page';
 
 export const routes: Routes = [
+  // ----------------------------------------------------
+  // 0. LANDING PAGE
+  // ----------------------------------------------------
+  { path: '', component: LandingPageComponent },
+
   // ----------------------------------------------------
   // 1. PUBLIC ROUTES
   // ----------------------------------------------------
@@ -66,9 +78,7 @@ export const routes: Routes = [
   { path: 'student-login', component: StudentLoginComponent },
   { path: 'student-registration', component: StudentRegistrationComponent },
 
-  // ----------------------------------------------------
-  // 2. ADMIN MODULE
-  // ----------------------------------------------------
+  // ... (rest of the routes)
   { path: 'admin-home', component: AdminHomeComponent, canActivate: [adminAuthGuard] },
   { path: 'add-student', component: AddStudentComponent, canActivate: [adminAuthGuard] },
   { path: 'view-students', component: ViewStudentsComponent, canActivate: [adminAuthGuard] },
@@ -87,10 +97,12 @@ export const routes: Routes = [
   { path: 'add-notice', component: AddNoticeComponent, canActivate: [adminAuthGuard] },
   { path: 'view-notices', component: NoticeComponent, canActivate: [adminAuthGuard] },
   { path: 'view-suggestions', component: SuggestionComponent, canActivate: [adminAuthGuard] },
+  { path: 'admin-exams', component: AdminExamComponent, canActivate: [adminAuthGuard] },
+  { path: 'admin-leaves', component: AdminLeavesComponent, canActivate: [adminAuthGuard] },
+  { path: 'admin-assignments', component: AdminAssignmentsComponent, canActivate: [adminAuthGuard] },
+  { path: 'admin-materials', component: AdminMaterialsComponent, canActivate: [adminAuthGuard] },
 
-  // ----------------------------------------------------
-  // 3. FACULTY MODULE
-  // ----------------------------------------------------
+  // 👨‍🏫 Faculty Pages
   { path: 'faculty-home', component: FacultyHomeComponent, canActivate: [facultyAuthGuard] },
   { path: 'take-attendance', component: TakeAttendanceComponent, canActivate: [facultyAuthGuard] },
   { path: 'attendance-history', component: AttendanceHistoryComponent, canActivate: [facultyAuthGuard] },
@@ -98,15 +110,14 @@ export const routes: Routes = [
   { path: 'students', component: StudentCenterComponent, canActivate: [facultyAuthGuard] },
   { path: 'notice', component: FacultyNoticeComponent, canActivate: [facultyAuthGuard] },
   { path: 'suggestion', component: FacultySuggestionComponent, canActivate: [facultyAuthGuard] },
-  { path: 'exam-marks', component: ExamMarksComponent, canActivate: [facultyAuthGuard] },
   { path: 'faculty-leave', component: FacultyLeaveComponent, canActivate: [facultyAuthGuard] },
   { path: 'study-material', component: StudyMaterialComponent, canActivate: [facultyAuthGuard] },
   { path: 'assignment', component: AssignmentComponent, canActivate: [facultyAuthGuard] },
+  { path: 'exam-creation', component: FacultyExamComponent, canActivate: [facultyAuthGuard] },
+  { path: 'exam-students', component: FacultyExamStudentsComponent, canActivate: [facultyAuthGuard] },
   { path: 'profile', component: FacultyProfileComponent, canActivate: [facultyAuthGuard] },
 
-  // ----------------------------------------------------
-  // 4. STUDENT MODULE
-  // ----------------------------------------------------
+  // 🎓 Student Pages
   { path: 'student-home', component: StudentHomeComponent, canActivate: [studentAuthGuard] },
   { path: 'view-my-attendance', component: ViewMyAttendanceComponent, canActivate: [studentAuthGuard] },
   { path: 'view-results', component: ViewResultsComponent, canActivate: [studentAuthGuard] },
@@ -115,10 +126,10 @@ export const routes: Routes = [
   { path: 'student-profile', component: StudentProfileComponent, canActivate: [studentAuthGuard] },
   { path: 'student-notices', component: StudentNoticesComponent, canActivate: [studentAuthGuard] },
   { path: 'student-suggestion', component: StudentSuggestionComponent, canActivate: [studentAuthGuard] },
+  { path: 'exam-attempt', component: StudentExamComponent, canActivate: [studentAuthGuard] },
 
   // ----------------------------------------------------
   // 5. DEFAULT & WILDCARD
   // ----------------------------------------------------
-  { path: '', redirectTo: 'student-login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'student-login' } 
+  { path: '**', redirectTo: '' } 
 ];

@@ -31,7 +31,13 @@
           <tr *ngFor="let f of faculties; let i = index">
             <td>{{ i + 1 }}</td>
 
-            <td>{{ getFullName(f) }}</td>
+            <td class="d-flex align-items-center gap-3 border-0">
+              <img [src]="f.imageUrl || f.ImageUrl || 'https://ui-avatars.com/api/?name=' + (f.Fname || f.fname || f.username || 'Faculty') + '&background=random'" 
+                   class="rounded-circle shadow-sm" 
+                   style="width: 40px; height: 40px; object-fit: cover;" 
+                   alt="Pic">
+              <div>{{ getFullName(f) }}</div>
+            </td>
             <td>{{ f.Department || f.department || 'N/A' }}</td>
             <td>{{ getDoj(f) ? (getDoj(f) | date:'MM/dd/yyyy') : 'N/A' }}</td>
 

@@ -8,7 +8,7 @@
     <ul class="nav flex-column px-2 gap-1 mt-2">
       <li class="nav-item">
         <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
-          routerLink="/student-home" routerLinkActive="active-link">
+          (click)="navigateTo('/student-home')" [class.active-link]="isActive('/student-home')" style="cursor: pointer;">
           <span>🏠 &nbsp; Dashboard</span>
           <i class="fas fa-caret-right small-arrow"></i>
         </a>
@@ -16,17 +16,30 @@
 
       <li class="nav-item">
         <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
-          routerLink="/view-my-attendance" routerLinkActive="active-link">
+          (click)="navigateTo('/view-my-attendance')" [class.active-link]="isActive('/view-my-attendance')" style="cursor: pointer;">
           <span>📅 &nbsp; My Attendance</span>
           <i class="fas fa-caret-right small-arrow"></i>
         </a>
       </li>
 
-
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
+          (click)="navigateTo('/view-results')" [class.active-link]="isActive('/view-results')" style="cursor: pointer;">
+          <span>🎓 &nbsp; Exam Results</span>
+          <i class="fas fa-caret-right small-arrow"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
+          (click)="navigateTo('/exam-attempt')" [class.active-link]="isActive('/exam-attempt')" style="cursor: pointer;">
+          <span>✍️ &nbsp; Attempt Exam</span>
+          <i class="fas fa-caret-right small-arrow"></i>
+        </a>
+      </li>
 
       <li class="nav-item">
         <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
-          routerLink="/my-assignments" routerLinkActive="active-link">
+          (click)="navigateTo('/my-assignments')" [class.active-link]="isActive('/my-assignments')" style="cursor: pointer;">
           <span>📚 &nbsp; Assignments</span>
           <i class="fas fa-caret-right small-arrow"></i>
         </a>
@@ -34,7 +47,7 @@
 
       <li class="nav-item">
         <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
-          routerLink="/my-study-material" routerLinkActive="active-link">
+          (click)="navigateTo('/my-study-material')" [class.active-link]="isActive('/my-study-material')" style="cursor: pointer;">
           <span>📖 &nbsp; Study Material</span>
           <i class="fas fa-caret-right small-arrow"></i>
         </a>
@@ -42,7 +55,7 @@
 
       <li class="nav-item">
         <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
-          routerLink="/student-notices" routerLinkActive="active-link">
+          (click)="navigateTo('/student-notices')" [class.active-link]="isActive('/student-notices')" style="cursor: pointer;">
           <span>🔔 &nbsp; Notices</span>
           <i class="fas fa-caret-right small-arrow"></i>
         </a>
@@ -50,7 +63,7 @@
 
       <li class="nav-item">
         <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
-          routerLink="/student-suggestion" routerLinkActive="active-link">
+          (click)="navigateTo('/student-suggestion')" [class.active-link]="isActive('/student-suggestion')" style="cursor: pointer;">
           <span>💡 &nbsp; Suggestions</span>
           <i class="fas fa-caret-right small-arrow"></i>
         </a>
@@ -58,7 +71,7 @@
 
       <li class="nav-item border-top border-dark mt-2 pt-2">
         <a class="nav-link py-2 px-3 rounded d-flex justify-content-between align-items-center"
-          routerLink="/student-profile" routerLinkActive="active-link">
+          (click)="navigateTo('/student-profile')" [class.active-link]="isActive('/student-profile')" style="cursor: pointer;">
           <span>👤 &nbsp; My Profile</span>
           <i class="fas fa-caret-right small-arrow"></i>
         </a>

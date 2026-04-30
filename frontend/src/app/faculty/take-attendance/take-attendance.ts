@@ -46,7 +46,7 @@ export class TakeAttendanceComponent implements OnInit {
   fetchStudents(): void {
     this.isLoading = true; 
     
-    this.http.get<any[]>(`http://127.0.0.1:5139/api/Student/${this.facultyId}/students`)
+    this.http.get<any[]>(`http://localhost:5139/api/Student/${this.facultyId}/students`)
       .subscribe({
         next: (data) => {
           this.zone.run(() => {
@@ -95,7 +95,7 @@ export class TakeAttendanceComponent implements OnInit {
       Date: new Date().toISOString()
     }));
 
-    this.http.post("http://127.0.0.1:5139/api/Student/submit", payload)
+    this.http.post("http://localhost:5139/api/Student/submit", payload)
       .subscribe({
         next: () => {
           this.zone.run(() => {

@@ -186,33 +186,41 @@ namespace WebApplication1.Controllers
         {
             try 
             {
-                var bsonCollection = _suggestions.Database.GetCollection<BsonDocument>("F_Suggestion");
-                var list = await bsonCollection.Find(Builders<BsonDocument>.Filter.Empty).ToListAsync();
+                var list = await _suggestions.Find(_ => true).ToListAsync();
                 var facultys = await _faculties.Find(_ => true).ToListAsync();
 
-                var result = list.Select(doc => {
-                    var dict = doc.ToDictionary();
-                    var fIdStr = (dict.ContainsKey("FacultyId") && dict["FacultyId"] != null) ? dict["FacultyId"].ToString() : "";
-                    var factName = facultys.Where(f => f.Fid.ToString() == fIdStr || f.Id == fIdStr)
-                                       .Select(f => $"{f.Fname} {f.Lname}")
-                                       .FirstOrDefault() ?? "Unknown";
+                var result = list.Select(s => {
+                    var factName = "Admin";
+                    if (s.Target == "Faculty" && s.FacultyId != "0")
+                    {
+                        factName = facultys.Where(f => f.Fid.ToString() == s.FacultyId || f.Id == s.FacultyId)
+                                           .Select(f => $"{f.Fname} {f.Lname}")
+                                           .FirstOrDefault() ?? "Unknown";
+                    }
+                    else if (s.TargetName != "Admin" && s.TargetName != "Unknown" && !string.IsNullOrEmpty(s.TargetName))
+                    {
+                        factName = s.TargetName;
+                    }
 
                     return new {
-                        id = dict.ContainsKey("_id") ? dict["_id"].ToString() : "",
-                        suggestionId = dict.ContainsKey("SuggestionId") ? dict["SuggestionId"] : 0,
-                        facultyId = fIdStr,
-                        title = dict.ContainsKey("Title") ? dict["Title"] : "",
-                        message = dict.ContainsKey("Message") ? dict["Message"] : "",
-                        postedAt = dict.ContainsKey("PostedAt") ? dict["PostedAt"] : DateTime.UtcNow,
-                        status = dict.ContainsKey("Status") ? dict["Status"] : "Pending",
-                        reply = dict.ContainsKey("Reply") ? dict["Reply"] : "",
-                        factName = factName
+                        id = s.Id,
+                        suggestionId = s.SuggestionId,
+                        facultyId = s.FacultyId,
+                        target = s.Target,
+                        studentName = s.StudentName,
+                        studentId = s.StudentId,
+                        title = s.Title,
+                        message = s.Message,
+                        postedAt = s.PostedAt,
+                        status = s.Status,
+                        reply = s.Reply,
+                        targetName = factName
                     };
                 }).ToList();
 
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
@@ -223,26 +231,42 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var bsonCollection = _suggestions.Database.GetCollection<BsonDocument>("F_Suggestion");
-                var bsonFilter = Builders<BsonDocument>.Filter.Eq("FacultyId", Facultyid);
+                // Filter: Suggestions for this Faculty OR Suggestions for Admin (Universal visibility)
+                // Using typed model class is 100% reliable
+                var list = await _suggestions.Find(s => 
+                    s.FacultyId == Facultyid || 
+                    s.FacultyId == "0" || 
+                    s.Target == "Admin"
+                ).ToListAsync();
 
-                if (long.TryParse(Facultyid, out long numericFid))
-                {
-                    bsonFilter = Builders<BsonDocument>.Filter.Or(bsonFilter, Builders<BsonDocument>.Filter.Eq("FacultyId", numericFid));
-                }
+                var facultys = await _faculties.Find(_ => true).ToListAsync();
 
-                var list = await bsonCollection.Find(bsonFilter).ToListAsync();
-                var result = list.Select(doc => {
-                    var dict = doc.ToDictionary();
+                var result = list.Select(s => {
+                    var factName = "Admin";
+                    if (s.Target == "Faculty" && s.FacultyId != "0")
+                    {
+                        factName = facultys.Where(f => f.Fid.ToString() == s.FacultyId || f.Id == s.FacultyId)
+                                           .Select(f => $"{f.Fname} {f.Lname}")
+                                           .FirstOrDefault() ?? "Unknown";
+                    }
+                    else if (s.TargetName != "Admin" && s.TargetName != "Unknown" && !string.IsNullOrEmpty(s.TargetName))
+                    {
+                        factName = s.TargetName;
+                    }
+
                     return new {
-                        id = dict.ContainsKey("_id") ? dict["_id"].ToString() : "",
-                        suggestionId = dict.ContainsKey("SuggestionId") ? dict["SuggestionId"] : 0,
-                        facultyId = dict.ContainsKey("FacultyId") ? dict["FacultyId"]?.ToString() : "",
-                        title = dict.ContainsKey("Title") ? dict["Title"] : "",
-                        message = dict.ContainsKey("Message") ? dict["Message"] : "",
-                        postedAt = dict.ContainsKey("PostedAt") ? dict["PostedAt"] : DateTime.UtcNow,
-                        status = dict.ContainsKey("Status") ? dict["Status"] : "Pending",
-                        reply = dict.ContainsKey("Reply") ? dict["Reply"] : ""
+                        id = s.Id,
+                        suggestionId = s.SuggestionId,
+                        facultyId = s.FacultyId,
+                        target = s.Target,
+                        targetName = factName,
+                        studentName = s.StudentName,
+                        studentId = s.StudentId,
+                        title = s.Title,
+                        message = s.Message,
+                        postedAt = s.PostedAt,
+                        status = s.Status,
+                        reply = s.Reply
                     };
                 }).ToList();
 
@@ -383,6 +407,17 @@ namespace WebApplication1.Controllers
                 if (result.DeletedCount == 0) return NotFound(new { message = "Faculty not found." });
 
                 return Ok(new { message = "Deleted successfully" });
+            }
+            catch (Exception ex) { return StatusCode(500, ex.Message); }
+        }
+
+        [HttpGet("students-by-dept/{dept}")]
+        public async Task<IActionResult> GetStudentsByDept(string dept)
+        {
+            try
+            {
+                var students = await _students.Find(s => s.Department == dept).ToListAsync();
+                return Ok(students);
             }
             catch (Exception ex) { return StatusCode(500, ex.Message); }
         }

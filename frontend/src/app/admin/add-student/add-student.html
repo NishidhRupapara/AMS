@@ -90,6 +90,11 @@
               <textarea class="form-control shadow-none" name="Address" [(ngModel)]="form.Address" #addr="ngModel" required rows="2" [class.is-invalid]="addr.invalid && addr.touched"></textarea>
             </div>
 
+            <div class="mb-3">
+              <label class="form-label fw-bold">Profile Image URL (Optional)</label>
+              <input type="text" class="form-control shadow-none" name="ImageUrl" [(ngModel)]="form.ImageUrl" placeholder="https://example.com/image.jpg" />
+            </div>
+
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">Password</label>

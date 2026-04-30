@@ -1,10 +1,10 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace YourNamespace.Models
+namespace WebApplication1.Models.Faculty
 {
     public class F_Suggestion
     {
@@ -13,11 +13,18 @@ namespace YourNamespace.Models
         public string? Id { get; set; }
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto Increment
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SuggestionId { get; set; }
 
-        [Required]
-        public int FacultyId { get; set; }
+        public string FacultyId { get; set; } = "0"; // Store ID as string for flexibility
+
+        public string Target { get; set; } = "Faculty"; // "Faculty" or "Admin"
+        
+        public string TargetName { get; set; } = "Unknown"; // Teacher Name or "Admin"
+
+        public string StudentName { get; set; } = "Student"; // Sender Name
+
+        public string StudentId { get; set; } = "0"; // Sender ID for filtering history
 
         [Required]
         [MaxLength(200)]

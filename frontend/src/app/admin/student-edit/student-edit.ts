@@ -77,7 +77,11 @@ export class StudentEditComponent implements OnInit {
           email_Id: data.Email_Id || data.email_Id,
           mo_Number: data.Mo_Number || data.mo_Number,
           dob: data.DOB || data.dob,
-          doa: data.DOA || data.doa
+          doa: data.DOA || data.doa,
+          address: data.Address || data.address,
+          parentName: data.ParentName || data.parentName,
+          parentMobile: data.ParentMobile || data.parentMobile,
+          parentEmail: data.ParentEmail || data.parentEmail
         };
 
         // Format dates for HTML <input type="date"> (YYYY-MM-DD)
@@ -125,6 +129,11 @@ export class StudentEditComponent implements OnInit {
       Faculty_Id: this.student.faculty_Id,
       Email_Id: this.student.email_Id,
       Mo_Number: this.student.mo_Number,
+      ImageUrl: this.student.imageUrl,
+      Address: this.student.address,
+      ParentName: this.student.parentName,
+      ParentMobile: this.student.parentMobile,
+      ParentEmail: this.student.parentEmail,
       // Safely map empty strings to null to prevent ASP.NET Model validation 400 Bad Requests
       DOB: this.student.dob === "" ? null : this.student.dob, 
       DOA: this.student.doa === "" ? null : this.student.doa

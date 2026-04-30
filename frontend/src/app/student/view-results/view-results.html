@@ -22,6 +22,7 @@
             <thead class="bg-light text-dark">
               <tr>
                 <th class="ps-4">Subject Name</th>
+                <th>Exam Date</th>
                 <th>Total Marks</th>
                 <th>Obtained Marks</th>
                 <th>Grade</th>
@@ -30,16 +31,23 @@
             </thead>
             <tbody>
               <tr *ngFor="let res of results">
-                <td class="ps-4 fw-bold text-secondary">{{ res.subject || res.Subject }}</td>
-                <td>{{ res.totalMarks || res.TotalMarks }}</td>
+                <td class="ps-4 fw-bold text-secondary">{{ res.subject }}</td>
+                <td>{{ res.date | date:'mediumDate' }}</td>
+                <td>{{ res.totalMarks }}</td>
                 <td>
-                  <span class="badge bg-info-subtle text-info px-3">{{ res.marksObtained || res.MarksObtained || res.obtainedMarks }}</span>
+                  <span class="badge bg-info-subtle text-info px-3">{{ res.marksObtained }}</span>
                 </td>
-                <td><span class="fw-bold">{{ res.grade || res.Grade || (res.marksObtained > 40 ? 'P' : 'F') }}</span></td>
+                <td><span class="fw-bold">{{ (res.marksObtained / res.totalMarks * 100) >= 35 ? 'P' : 'F' }}</span></td>
                 <td>
-                  <span class="status-badge" [ngClass]="(res.status || res.Status || (res.marksObtained > 40 ? 'Pass' : 'Fail')) === 'Pass' ? 'pass' : 'fail'">
-                    {{ res.status || res.Status || (res.marksObtained > 40 ? 'Pass' : 'Fail') }}
+                  <span class="status-badge" [ngClass]="(res.marksObtained / res.totalMarks * 100) >= 35 ? 'pass' : 'fail'">
+                    {{ (res.marksObtained / res.totalMarks * 100) >= 35 ? 'Pass' : 'Fail' }}
                   </span>
+                </td>
+              </tr>
+              <tr *ngIf="results.length === 0 && !isLoading">
+                <td colspan="6" class="text-center py-5 text-muted">
+                  <i class="fas fa-search fa-2x mb-2"></i>
+                  <p>No results found for your account.</p>
                 </td>
               </tr>
             </tbody>

@@ -17,7 +17,7 @@
         <button 
           class="nav-link text-white py-2 px-3 rounded w-100 text-start d-flex justify-content-between align-items-center"
           [ngClass]="{'active': openSubmenus.student}"
-          (click)="toggleSubmenu('student')">
+          (click)="toggleSubmenu('student', $event)">
           <div><span class="me-2">🎓</span> Manage Student</div>
           <span class="triangle" [ngClass]="{'open': openSubmenus.student}"></span>
         </button>
@@ -32,7 +32,7 @@
         <button 
           class="nav-link text-white py-2 px-3 rounded w-100 text-start d-flex justify-content-between align-items-center"
           [ngClass]="{'active': openSubmenus.faculty}"
-          (click)="toggleSubmenu('faculty')">
+          (click)="toggleSubmenu('faculty', $event)">
           <div><span class="me-2">👨‍🏫</span> Faculty</div>
           <span class="triangle" [ngClass]="{'open': openSubmenus.faculty}"></span>
         </button>
@@ -47,7 +47,7 @@
         <button 
           class="nav-link text-white py-2 px-3 rounded w-100 text-start d-flex justify-content-between align-items-center"
           [ngClass]="{'active': openSubmenus.department}"
-          (click)="toggleSubmenu('department')">
+          (click)="toggleSubmenu('department', $event)">
           <div><span class="me-2">🏢</span> Department</div>
           <span class="triangle" [ngClass]="{'open': openSubmenus.department}"></span>
         </button>
@@ -61,7 +61,7 @@
         <button 
           class="nav-link text-white py-2 px-3 rounded w-100 text-start d-flex justify-content-between align-items-center"
           [ngClass]="{'active': openSubmenus.notice}"
-          (click)="toggleSubmenu('notice')">
+          (click)="toggleSubmenu('notice', $event)">
           <div><span class="me-2">🔔</span> Notice</div>
           <span class="triangle" [ngClass]="{'open': openSubmenus.notice}"></span>
         </button>
@@ -70,6 +70,39 @@
           <a class="submenu-item" routerLink="/view-notices" routerLinkActive="sub-active">👁️ View Notices</a>
           <a class="submenu-item" routerLink="/view-suggestions" routerLinkActive="sub-active">💡 Suggestions</a>
         </div>
+      </li>
+
+      <li class="nav-item mb-1">
+        <button 
+          class="nav-link text-white py-2 px-3 rounded w-100 text-start d-flex justify-content-between align-items-center"
+          [ngClass]="{'active': openSubmenus.exam}"
+          (click)="toggleSubmenu('exam', $event)">
+          <div><span class="me-2">📝</span> Exam</div>
+          <span class="triangle" [ngClass]="{'open': openSubmenus.exam}"></span>
+        </button>
+        <div class="submenu" [ngClass]="{'open': openSubmenus.exam}">
+          <a class="submenu-item" routerLink="/admin-exams" routerLinkActive="sub-active">👁️ View All Exams</a>
+        </div>
+      </li>
+
+      <li class="nav-item mb-1">
+        <button 
+          class="nav-link text-white py-2 px-3 rounded w-100 text-start d-flex justify-content-between align-items-center"
+          [ngClass]="{'active': openSubmenus.academic}"
+          (click)="toggleSubmenu('academic', $event)">
+          <div><span class="me-2">📚</span> Academic</div>
+          <span class="triangle" [ngClass]="{'open': openSubmenus.academic}"></span>
+        </button>
+        <div class="submenu" [ngClass]="{'open': openSubmenus.academic}">
+          <a class="submenu-item" routerLink="/admin-assignments" routerLinkActive="sub-active">📁 Assignments</a>
+          <a class="submenu-item" routerLink="/admin-materials" routerLinkActive="sub-active">📖 Study Materials</a>
+        </div>
+      </li>
+
+      <li class="nav-item mb-1">
+        <a class="nav-link text-white py-2 px-3 rounded text-start" routerLink="/admin-leaves" routerLinkActive="active-link">
+          <span class="me-2">🗓️</span> Leave Requests
+        </a>
       </li>
     </ul>
   </div>

@@ -78,7 +78,12 @@ export class DepartmentDetailsComponent implements OnInit {
   }
 
   handleUpdate(): void {
-    this.http.put(`${this.apiUrl}/${this.selectedDept.did}`, this.selectedDept).subscribe({
+    const payload = {
+      Did: this.selectedDept.did,
+      DepartmentName: this.selectedDept.departmentName,
+      ImageUrl: this.selectedDept.imageUrl || this.selectedDept.ImageUrl
+    };
+    this.http.put(`${this.apiUrl}/${this.selectedDept.did}`, payload).subscribe({
       next: () => {
         alert("✅ Department updated successfully");
         this.closeModals(); // Use helper to close and refresh
@@ -93,5 +98,19 @@ export class DepartmentDetailsComponent implements OnInit {
     this.showViewModal = false;
     this.showEditModal = false;
     this.cdr.detectChanges(); // 🚀 Clears the backdrop and modal instantly
+  }
+
+  getDepartmentIcon(deptName: string): string {
+    if (!deptName) return 'fa-building';
+    const name = deptName.toLowerCase();
+    if (name.includes('computer') || name.includes('it') || name.includes('software')) return 'fa-laptop-code';
+    if (name.includes('civil') || name.includes('construction')) return 'fa-hard-hat';
+    if (name.includes('mechanical') || name.includes('machine')) return 'fa-cogs';
+    if (name.includes('electrical') || name.includes('electronics')) return 'fa-bolt';
+    if (name.includes('business') || name.includes('management') || name.includes('mba')) return 'fa-briefcase';
+    if (name.includes('science') || name.includes('physics') || name.includes('chemistry')) return 'fa-flask';
+    if (name.includes('math')) return 'fa-calculator';
+    if (name.includes('art') || name.includes('design')) return 'fa-palette';
+    return 'fa-building';
   }
 }

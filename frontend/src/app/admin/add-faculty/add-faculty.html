@@ -87,13 +87,17 @@
               <input type="text" name="EmergencyPhone" class="form-control" [(ngModel)]="formData.EmergencyPhone" pattern="[0-9]{10}" #emob="ngModel" [class.is-invalid]="emob.invalid && emob.touched" />
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
               <label class="form-label fw-bold">Education Qualification</label>
               <input type="text" name="Education" class="form-control" [(ngModel)]="formData.Education" required #edu="ngModel" [class.is-invalid]="edu.invalid && edu.touched" />
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <label class="form-label fw-bold">Address</label>
-              <textarea name="Address" class="form-control" rows="2" [(ngModel)]="formData.Address" required #addr="ngModel" [class.is-invalid]="addr.invalid && addr.touched"></textarea>
+              <textarea name="Address" class="form-control" rows="1" [(ngModel)]="formData.Address" required #addr="ngModel" [class.is-invalid]="addr.invalid && addr.touched"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Profile Image URL</label>
+              <input type="text" name="ImageUrl" class="form-control" [(ngModel)]="formData.ImageUrl" placeholder="Optional" />
             </div>
           </div>
 

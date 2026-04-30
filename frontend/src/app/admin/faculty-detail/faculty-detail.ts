@@ -37,7 +37,7 @@ export class FacultyDetailComponent implements OnInit {
   }
 
   fetchFaculty() {
-    this.http.get(`http://127.0.0.1:5139/api/Faculty/profile/${this.id}`).subscribe({
+    this.http.get(`http://localhost:5139/api/Faculty/profile/${this.id}`).subscribe({
       next: (data: any) => {
         this.zone.run(() => {
           this.faculty = data;

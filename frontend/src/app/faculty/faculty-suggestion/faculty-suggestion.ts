@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -17,13 +17,14 @@ export class FacultySuggestionComponent implements OnInit {
   
   // State Management
   mySuggestions: any[] = [];
+  studentSuggestions: any[] = [];
   isLoading: boolean = false;
-  viewMode: 'add' | 'list' = 'add'; // Toggle between "Add" and "History"
+  viewMode: 'add' | 'list' = 'list'; // Start on History to see feedback
   
   facultyId: string | null = null;
   feedback = { type: '', msg: '' };
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private zone: NgZone) {}
 
   ngOnInit(): void {
     // Retrieve the Faculty ID from session
@@ -32,6 +33,8 @@ export class FacultySuggestionComponent implements OnInit {
 
     if (!this.facultyId) {
       this.feedback = { type: 'danger', msg: 'Session expired. Please login again.' };
+    } else {
+      this.fetchMySuggestions(); // Initial load
     }
   }
 
@@ -47,22 +50,33 @@ export class FacultySuggestionComponent implements OnInit {
   // ✅ POST: Connects to your [HttpPost("suggestion")]
   onSubmit(): void {
     if (!this.form.title.trim() || !this.form.message.trim()) return;
+    this.isLoading = true;
 
     const payload = {
       facultyId: this.facultyId,
       title: this.form.title,
-      message: this.form.message
+      message: this.form.message,
+      postedAt: new Date().toISOString(),
+      studentId: '0' // Identifying this as a faculty suggestion
     };
 
     this.http.post("http://localhost:5139/api/Faculty/suggestion", payload)
       .subscribe({
         next: (res: any) => {
-          this.feedback = { type: 'success', msg: res.message || '✅ Submitted Successfully!' };
-          this.form = { title: '', message: '' };
-          this.cdr.detectChanges();
+          this.zone.run(() => {
+            this.feedback = { type: 'success', msg: res.message || '✅ Submitted Successfully!' };
+            this.form = { title: '', message: '' };
+            this.isLoading = false;
+            this.fetchMySuggestions();
+            this.cdr.detectChanges();
+          });
         },
         error: () => {
-          this.feedback = { type: 'danger', msg: '❌ Error: Could not reach the server.' };
+          this.zone.run(() => {
+            this.feedback = { type: 'danger', msg: '❌ Error: Could not reach the server.' };
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          });
         }
       });
   }
@@ -73,13 +87,23 @@ export class FacultySuggestionComponent implements OnInit {
     this.http.get<any[]>(`http://localhost:5139/api/Faculty/ViewSuggestion?Facultyid=${this.facultyId}`)
       .subscribe({
         next: (data) => {
-          this.mySuggestions = data;
-          this.isLoading = false;
-          this.cdr.detectChanges();
+          this.zone.run(() => {
+            console.log("Teacher received suggestions:", data);
+            
+            this.mySuggestions = data.filter(s => !s.studentId || s.studentId === '0' || s.studentId === 0);
+            this.studentSuggestions = data.filter(s => s.studentId && s.studentId !== '0' && s.studentId !== 0);
+            
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          });
         },
-        error: () => {
-          this.isLoading = false;
-          this.feedback = { type: 'danger', msg: 'Failed to load your history.' };
+        error: (err) => {
+          this.zone.run(() => {
+            console.error("Fetch error:", err);
+            this.isLoading = false;
+            this.feedback = { type: 'danger', msg: 'Failed to load suggestions.' };
+            this.cdr.detectChanges();
+          });
         }
       });
   }

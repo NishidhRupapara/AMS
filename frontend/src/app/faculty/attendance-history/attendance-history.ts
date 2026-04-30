@@ -110,12 +110,13 @@ export class AttendanceHistoryComponent implements OnInit {
     if (!this.selectedRecord) return;
 
     const payload = {
-      status: this.selectedRecord.status,
-      remark: this.selectedRecord.remark,
-      date: this.selectedRecord.date
+      Status: this.selectedRecord.status,
+      Remark: this.selectedRecord.remark,
+      FacultyId: this.fidsession,
+      Date: this.selectedRecord.date
     };
 
-    this.http.put(`http://localhost:5139/api/Student/update-attendance/${this.selectedRecord.id}`, payload)
+    this.http.put(`http://localhost:5139/api/Admin/history/${this.selectedRecord.id}`, payload)
       .subscribe({
         next: () => {
           alert("✅ Record updated!");

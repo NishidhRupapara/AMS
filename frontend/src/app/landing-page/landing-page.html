@@ -1,0 +1,32 @@
+<div class="landing-container d-flex flex-column align-items-center justify-content-center min-vh-100 px-3">
+  <div class="overlay"></div>
+  
+  <div class="content-wrapper text-center animate-fade-in">
+    <div class="logo-section mb-5">
+      <div class="logo-icon mb-3">⚡</div>
+      <h1 class="display-4 fw-bold text-dark mb-2">AMS <span class="text-primary">Portal</span></h1>
+      <p class="lead text-secondary opacity-75">Attendance Management System & Academic Hub</p>
+    </div>
+
+    <h2 class="text-dark mb-4 fw-light">Select Your Portal</h2>
+
+    <div class="row g-4 justify-content-center max-w-1000">
+      <div class="col-md-4" *ngFor="let role of roles">
+        <a [routerLink]="role.route" class="role-card text-decoration-none h-100 d-block p-4 rounded-4 shadow-sm border bg-white">
+          <div class="role-icon mb-3" [style.background-color]="role.color + '11'" [style.color]="role.color">
+            {{ role.icon }}
+          </div>
+          <h3 class="h5 text-dark fw-bold mb-3">{{ role.title }}</h3>
+          <p class="text-secondary small mb-4">{{ role.description }}</p>
+          <div class="btn btn-sm rounded-pill px-4" [style.background-color]="role.color" style="color: white">
+            Access Portal
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-info mt-5 text-secondary opacity-50 small">
+      &copy; 2026 AMS Digital Infrastructure. All Rights Reserved.
+    </div>
+  </div>
+</div>

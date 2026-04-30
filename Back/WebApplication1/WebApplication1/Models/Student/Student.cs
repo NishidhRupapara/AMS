@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 
@@ -58,6 +58,9 @@ namespace WebApplication1.Models.Student
 
         [BsonElement("Password")]
         public string Password { get; set; } = string.Empty;
+
+        [BsonElement("ImageUrl")]
+        public string ImageUrl { get; set; } = string.Empty;
 
         [BsonElement("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

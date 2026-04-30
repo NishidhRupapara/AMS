@@ -42,7 +42,7 @@ export class FacultyProfileComponent implements OnInit {
   }
 
   fetchProfile(): void {
-    this.http.get<any>(`http://127.0.0.1:5139/api/Faculty/profile/${this.facultyId}`)
+    this.http.get<any>(`http://localhost:5139/api/Faculty/profile/${this.facultyId}`)
       .subscribe({
         next: (data) => {
           this.zone.run(() => {

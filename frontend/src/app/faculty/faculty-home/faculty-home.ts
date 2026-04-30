@@ -52,7 +52,7 @@ export class FacultyHomeComponent implements OnInit, OnDestroy {
   }
 
   fetchDashboardStats(): void {
-    this.http.get<any>("http://127.0.0.1:5139/api/Dashboard/stats").subscribe({
+    this.http.get<any>("http://localhost:5139/api/Dashboard/stats").subscribe({
       next: (data) => {
         this.zone.run(() => {
           // Map data from C# backend with case-insensitive fallback

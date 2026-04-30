@@ -1,0 +1,91 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-student-sidebar></app-student-sidebar>
+
+  <div class="main-content flex-grow-1 p-4">
+    <div class="portal-header p-4 rounded-4 shadow-sm bg-gradient-success text-white mb-4">
+      <h2 class="fw-bold mb-0">Examination Hall</h2>
+      <p class="mb-0 opacity-75">View and attempt your scheduled examinations</p>
+    </div>
+
+    <!-- AVAILABLE EXAMS -->
+    <div *ngIf="viewMode === 'available'" class="animate-fade">
+      <div class="row g-4">
+        <div class="col-md-6" *ngFor="let e of availableExams">
+          <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body">
+              <h5 class="fw-bold text-success mb-2">{{ e.title }}</h5>
+              <p class="text-muted small mb-3">{{ e.subject }}</p>
+              <div class="hstack gap-3 mb-3 small text-secondary">
+                <span><i class="far fa-clock me-1"></i> {{ e.durationMinutes }} Min</span>
+                <span><i class="far fa-calendar me-1"></i> {{ e.examDate | date:'shortDate' }}</span>
+                <span *ngIf="isExpired(e.examDate, e.durationMinutes)" class="badge bg-secondary">Expired</span>
+                <span *ngIf="!isExpired(e.examDate, e.durationMinutes) && !isUpcoming(e.examDate)" class="badge bg-success">Live</span>
+                <span *ngIf="isUpcoming(e.examDate)" class="badge bg-warning text-dark">Starts in: {{ getWaitTime(e.examDate) }}</span>
+              </div>
+              <button class="btn btn-success w-100 fw-bold rounded-pill" 
+                      [disabled]="isExpired(e.examDate, e.durationMinutes) || isUpcoming(e.examDate)"
+                      (click)='startExam(e.id)'>
+                <i class="fas" [ngClass]="isUpcoming(e.examDate) ? 'fa-clock' : 'fa-play'"></i>
+                {{ isExpired(e.examDate, e.durationMinutes) ? 'Examination Closed' : (isUpcoming(e.examDate) ? 'Waiting' : 'Start Examination') }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="availableExams.length === 0" class="text-center py-5 text-muted">
+        <i class="fas fa-graduation-cap fa-3x mb-3"></i>
+        <p>No exams currently available for your department.</p>
+      </div>
+    </div>
+
+    <!-- TAKING EXAM -->
+    <div *ngIf="viewMode === 'taking'" class="container" style="max-width: 800px;">
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+          <h4 class="fw-bold mb-0 text-primary">{{ currentExam.title }}</h4>
+          <span class="badge bg-danger px-3 py-2 fs-5">Time Left: {{ displayTime }}</span>
+        </div>
+
+        <div *ngFor="let q of currentExam.questions; let i = index" class="mb-5 animate-up">
+          <h6 class="fw-bold mb-3">{{ i + 1 }}. {{ q.questionText }} <span class="text-muted small">({{ q.marks }} Marks)</span></h6>
+          <div class="row g-3">
+            <div class="col-md-6" *ngFor="let opt of q.options; let optIdx = index">
+              <div class="option-card p-3 rounded-3 border" 
+                   [class.selected]="answers[i] === optIdx"
+                   (click)="answers[i] = optIdx">
+                <span class="fw-bold me-2">{{ optIdx + 1 }}.</span> {{ opt }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow" (click)="submitExam()">Submit Examination</button>
+      </div>
+    </div>
+
+    <!-- RESULT VIEW -->
+    <div *ngIf="viewMode === 'result'" class="container text-center py-5 animate-up">
+      <div class="card border-0 shadow rounded-4 p-5">
+        <div class="mb-4">
+          <i class="fas fa-check-circle text-success fa-5x"></i>
+        </div>
+        <h2 class="fw-bold text-dark">Exam Submitted!</h2>
+        <p class="text-muted mb-4">Thank you for completing the examination.</p>
+        
+        <div class="display-4 fw-bold text-primary mb-2">{{ examResult.score }} / {{ examResult.totalPossible }}</div>
+        <h5 class="text-secondary mb-4">Your Final Score</h5>
+
+        <button class="btn btn-outline-primary px-5 rounded-pill fw-bold" (click)="viewMode = 'available'">Return to List</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-gradient-success { background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%); }
+  .option-card { cursor: pointer; transition: all 0.2s; background: white; }
+  .option-card:hover { background: #f8f9fc; transform: translateX(5px); }
+  .option-card.selected { background: #e0f2fe; border-color: #0ea5e9 !important; color: #0369a1; font-weight: 600; }
+  .animate-fade { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>

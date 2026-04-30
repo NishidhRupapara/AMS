@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 
@@ -12,10 +12,24 @@ namespace WebApplication1.Models.Student
         public string? Id { get; set; } // Matches MongoDB _id
 
         [BsonElement("StudentId")]
-        public string StudentId { get; set; } = string.Empty; // Matches Sid.ToString()
+        public object? StudentIdObj { get; set; }
+
+        [BsonIgnore]
+        public string StudentId 
+        { 
+            get => StudentIdObj?.ToString() ?? string.Empty; 
+            set => StudentIdObj = value; 
+        }
 
         [BsonElement("FacultyId")]
-        public string FacultyId { get; set; } = string.Empty; // Matches Faculty fid
+        public object? FacultyIdObj { get; set; }
+
+        [BsonIgnore]
+        public string FacultyId 
+        { 
+            get => FacultyIdObj?.ToString() ?? string.Empty; 
+            set => FacultyIdObj = value; 
+        }
 
         [BsonElement("Status")]
         public string Status { get; set; } = string.Empty; // e.g., "Present", "Absent"

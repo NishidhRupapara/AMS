@@ -42,5 +42,8 @@ namespace WebApplication1.Models.Faculty
 
         [BsonElement("DateOfJoining")]
         public string Doj { get; set; } = string.Empty;
+
+        [BsonElement("ImageUrl")]
+        public string ImageUrl { get; set; } = string.Empty;
     }
 }

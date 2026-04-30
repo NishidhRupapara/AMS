@@ -13,7 +13,7 @@ import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar';
 export class ViewStudentsComponent implements OnInit {
   students: any[] = [];
   isLoading: boolean = true;
-  private apiUrl = 'http://127.0.0.1:5139/api/Student'; // Adjust if your port changed
+  private apiUrl = 'http://localhost:5139/api/Student'; // Adjust if your port changed
 
   constructor(
     private http: HttpClient,

@@ -25,7 +25,7 @@ export class AddStudentComponent implements OnInit {
     Fname: "", Mname: "", Lname: "", Gender: "",
     DOB: "", DOA: "", Email_Id: "", Mo_Number: "",
     Address: "", ParentName: "", ParentMobile: "", ParentEmail: "",
-    Password: "", ConfirmPassword: ""
+    Password: "", ConfirmPassword: "", ImageUrl: ""
   };
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -95,7 +95,7 @@ export class AddStudentComponent implements OnInit {
       Faculty_Id: "", Department: "", Fname: "", Mname: "", Lname: "", Gender: "",
       DOB: "", DOA: "", Email_Id: "", Mo_Number: "", Address: "",
       ParentName: "", ParentMobile: "", ParentEmail: "",
-      Password: "", ConfirmPassword: ""
+      Password: "", ConfirmPassword: "", ImageUrl: ""
     };
     this.filteredFaculties = [];
   }

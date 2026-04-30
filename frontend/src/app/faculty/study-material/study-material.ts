@@ -24,7 +24,9 @@ export class StudyMaterialComponent implements OnInit {
     department: '',
     subject: '',
     title: '',
-    materialLink: ''
+    materialLink: '',
+    fileName: '',
+    fileData: ''
   };
 
   myMaterials: any[] = [];
@@ -34,9 +36,19 @@ export class StudyMaterialComponent implements OnInit {
   ngOnInit(): void {
     const rawFid = sessionStorage.getItem("sessionFid");
     this.facultyId = rawFid ? rawFid.replace(/['"]/g, '').trim() : null;
-
-    // 🚀 Fetch departments immediately
     this.fetchDepartments();
+  }
+
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.form.fileName = file.name;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.form.fileData = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   fetchDepartments(): void {
@@ -58,61 +70,68 @@ export class StudyMaterialComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (!this.form.department || !this.form.subject || !this.form.title || !this.form.materialLink) {
-      this.feedback = { type: 'danger', msg: 'Please fill all fields.' };
+    if (!this.form.department || !this.form.subject || !this.form.title || (!this.form.materialLink && !this.form.fileData)) {
+      this.feedback = { type: 'danger', msg: 'Please fill all required fields and provide a link or file.' };
       return;
     }
 
     const payload = {
       FacultyId: this.facultyId,
-      // Map frontend 'materialLink' to backend 'Link' to match CommonModels.cs
       Department: this.form.department,
       Subject: this.form.subject,
       Title: this.form.title,
-      Link: this.form.materialLink
+      Link: this.form.materialLink,
+      FileName: this.form.fileName,
+      FileData: this.form.fileData
     };
 
     this.http.post("http://localhost:5139/api/Faculty/study-material", payload)
       .subscribe({
         next: (res: any) => {
           this.feedback = { type: 'success', msg: res.message };
-          this.form = { department: '', subject: '', title: '', materialLink: '' };
+          this.form = { department: '', subject: '', title: '', materialLink: '', fileName: '', fileData: '' };
           this.cdr.detectChanges();
         },
         error: () => this.feedback = { type: 'danger', msg: 'Failed to share material.' }
       });
   }
 
- fetchMyMaterials(): void {
-    // 🚀 Check if facultyId exists in session before making the call
+  downloadFile(material: any): void {
+    if (!material.fileData) return;
+    const link = document.createElement('a');
+    link.href = material.fileData;
+    link.download = material.fileName || 'material';
+    link.click();
+  }
+
+  fetchMyMaterials(): void {
     if (this.facultyId === null || this.facultyId === undefined) {
         this.feedback = { type: 'danger', msg: 'Session error. Please re-login.' };
         return;
     }
 
     this.isLoading = true;
-
-    // The URL must exactly match the [HttpGet] route defined in C#
     const url = `http://localhost:5139/api/Faculty/my-materials/${this.facultyId}`;
 
     this.http.get<any[]>(url).subscribe({
         next: (data) => {
-            // Standardize mapping to ensure the HTML table keys match the DB keys
             this.myMaterials = data.map(m => ({
                 postedOn: m.postedOn || m.PostedOn,
                 department: m.department || m.Department,
                 title: m.title || m.Title,
-                link: m.link || m.Link
+                link: m.link || m.Link,
+                fileName: m.fileName || m.FileName,
+                fileData: m.fileData || m.FileData
             }));
             this.isLoading = false;
             this.cdr.detectChanges();
         },
         error: (err) => {
             console.error("Fetch Error:", err);
-            this.feedback = { type: 'danger', msg: 'The server could not find the history route.' };
+            this.feedback = { type: 'danger', msg: 'Failed to fetch materials.' };
             this.isLoading = false;
             this.cdr.detectChanges();
         }
     });
-}
+  }
 }

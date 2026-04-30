@@ -55,6 +55,8 @@ namespace WebApplication1.Models
         public string Subject { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Link { get; set; } = string.Empty;
+        public string? FileName { get; set; }
+        public string? FileData { get; set; }
         public DateTime PostedOn { get; set; }
     }
 
@@ -69,7 +71,10 @@ namespace WebApplication1.Models
         public string Subject { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string ReferenceLink { get; set; } = string.Empty;
         public DateTime Deadline { get; set; }
+        public string? FileName { get; set; }
+        public string? FileData { get; set; }
         public DateTime PostedOn { get; set; }
     }
 
@@ -79,6 +84,7 @@ namespace WebApplication1.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
+        public string ExamId { get; set; } = string.Empty;
         public string StudentId { get; set; } = string.Empty;
         public string FacultyId { get; set; } = string.Empty;
         public string Subject { get; set; } = string.Empty;
@@ -88,18 +94,46 @@ namespace WebApplication1.Models
         public DateTime DateEntered { get; set; }
     }
 
+
     [BsonIgnoreExtraElements]
-    public class F_Suggestion
+    public class Exam
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        public int SuggestionId { get; set; }
         public string FacultyId { get; set; } = string.Empty;
+        public string Department { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
-        public string Message { get; set; } = string.Empty;
-        public DateTime PostedAt { get; set; }
-        public string Status { get; set; } = "Pending";
-        public string Reply { get; set; } = string.Empty;
+        public string Subject { get; set; } = string.Empty;
+        public int DurationMinutes { get; set; }
+        public DateTime ExamDate { get; set; }
+        public List<Question> Questions { get; set; } = new();
+        public bool IsPublished { get; set; } = false;
+        public DateTime CreatedAt { get; set; }
+    }
+
+    [BsonIgnoreExtraElements]
+    public class Question
+    {
+        public string QuestionText { get; set; } = string.Empty;
+        public List<string> Options { get; set; } = new();
+        public int CorrectOptionIndex { get; set; }
+        public int Marks { get; set; } = 1;
+    }
+
+    [BsonIgnoreExtraElements]
+    public class ExamAttempt
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; }
+        public string ExamId { get; set; } = string.Empty;
+        public string StudentId { get; set; } = string.Empty;
+        public string StudentName { get; set; } = string.Empty;
+        public List<int> SelectedOptions { get; set; } = new();
+        public int Score { get; set; }
+        public int TotalMarks { get; set; }
+        public DateTime AttemptedAt { get; set; }
+        public bool IsEvaluated { get; set; } = true;
     }
 }

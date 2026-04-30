@@ -1,0 +1,2 @@
+.notice-card { border-left: 5px solid #ffc107 !important; transition: transform 0.2s; }
+.notice-card:hover { transform: scale(1.01); }

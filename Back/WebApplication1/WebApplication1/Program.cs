@@ -60,48 +60,53 @@ app.MapControllers();
 // --- MASTER DATABASE AUTO-GENERATION & SEEDING SCRIPT ---
 using (var scope = app.Services.CreateScope())
 {
-    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-    var client = new MongoClient(config["MongoDB:ConnectionString"]);
-    var db = client.GetDatabase(config["MongoDB:Database"]);
-
-    var requiredCollections = new List<string> 
-    { 
-        "faculties", "Faculty", "counters", "Counters", "Students", 
-        "StudentTbl", "Attendance", "StudentAt", "F_Suggestion", 
-        "Admin", "AdminNotice", "Department" 
-    };
-
-    var existingCollections = db.ListCollectionNames().ToList();
-    foreach (var collectionName in requiredCollections)
+    try 
     {
-        if (!existingCollections.Contains(collectionName))
+        var db = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
+        var collections = db.ListCollectionNames().ToList();
+        
+        var requiredCollections = new[] { 
+            "faculties", "Faculty", "counters", "Counters", "Students", 
+            "StudentTbl", "Attendance", "StudentAt", "F_Suggestion", 
+            "Admin", "AdminNotice", "Department" 
+        };
+
+        foreach (var col in requiredCollections)
         {
-            db.CreateCollection(collectionName);
-            Console.WriteLine($"✅ Created missing collection: {collectionName}");
+            if (!collections.Contains(col))
+            {
+                db.CreateCollection(col);
+                Console.WriteLine($"Created collection: {col}");
+            }
+        }
+
+        // Seed Admin if empty
+        var adminCol = db.GetCollection<BsonDocument>("Admin");
+        if (adminCol.CountDocuments(new BsonDocument()) == 0)
+        {
+            adminCol.InsertOne(new BsonDocument {
+                { "Aid", 1 },
+                { "Username", "admin" },
+                { "Password", "adminpassword" }
+            });
+            Console.WriteLine("Seeded default admin user.");
+        }
+
+        // Seed Counters if empty
+        var countersCol = db.GetCollection<BsonDocument>("Counters");
+        if (countersCol.CountDocuments(new BsonDocument()) == 0)
+        {
+            countersCol.InsertMany(new[] {
+                new BsonDocument { { "_id", "Sid" }, { "Seq", 0L } },
+                new BsonDocument { { "_id", "facultyid" }, { "Seq", 0L } },
+                new BsonDocument { { "_id", "suggestionid" }, { "Seq", 0L } }
+            });
+            Console.WriteLine("Seeded counters.");
         }
     }
-
-    var countersCollection = db.GetCollection<BsonDocument>("Counters");
-    if (countersCollection.CountDocuments(new BsonDocument()) == 0)
+    catch (Exception ex)
     {
-        var initialCounters = new List<BsonDocument>
-        {
-            new BsonDocument { { "_id", "Sid" }, { "Seq", 0L } },
-            new BsonDocument { { "_id", "facultyid" }, { "Seq", 0L } },
-            new BsonDocument { { "_id", "suggestionid" }, { "Seq", 0L } }
-        };
-        countersCollection.InsertMany(initialCounters);
-    }
-
-    var adminCollection = db.GetCollection<BsonDocument>("Admin");
-    if (adminCollection.CountDocuments(new BsonDocument()) == 0)
-    {
-        adminCollection.InsertOne(new BsonDocument
-        {
-            { "Aid", 1 },
-            { "Username", "admin" },
-            { "Password", "adminpassword" }
-        });
+        Console.WriteLine($"Database seeding skipped: {ex.Message}");
     }
 }
 

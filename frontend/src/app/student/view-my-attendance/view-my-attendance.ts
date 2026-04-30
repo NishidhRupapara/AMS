@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { StudentSidebarComponent } from '../student-sidebar/student-sidebar';
@@ -17,7 +17,11 @@ export class ViewMyAttendanceComponent implements OnInit {
   percentage: number = 0;
   loading: boolean = true;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
+  ) {}
 
   ngOnInit(): void {
     const rawSid = sessionStorage.getItem("sessionStudentId");
@@ -31,22 +35,28 @@ export class ViewMyAttendanceComponent implements OnInit {
     this.http.get<any[]>(`http://localhost:5139/api/Student/my-attendance/${sid}`)
       .subscribe({
         next: (data) => {
-          this.attendanceList = data.sort((a, b) => {
-            const dateA = new Date(a.date || a.Date).getTime();
-            const dateB = new Date(b.date || b.Date).getTime();
-            return dateB - dateA;
+          this.zone.run(() => {
+            this.attendanceList = data.sort((a, b) => {
+              const dateA = new Date(a.date || a.Date).getTime();
+              const dateB = new Date(b.date || b.Date).getTime();
+              return dateB - dateA;
+            });
+            
+            this.presentCount = data.filter(a => (a.status || a.Status) === 'Present').length;
+            this.absentCount = data.filter(a => (a.status || a.Status) === 'Absent').length;
+            
+            const total = data.length;
+            this.percentage = total > 0 ? Math.round((this.presentCount / total) * 100) : 0;
+            this.loading = false;
+            this.cdr.detectChanges();
           });
-          
-          this.presentCount = data.filter(a => (a.status || a.Status) === 'Present').length;
-          this.absentCount = data.filter(a => (a.status || a.Status) === 'Absent').length;
-          
-          const total = data.length;
-          this.percentage = total > 0 ? Math.round((this.presentCount / total) * 100) : 0;
-          this.loading = false;
         },
         error: (err) => {
-          console.error("Attendance Fetch Error:", err);
-          this.loading = false;
+          this.zone.run(() => {
+            console.error("Attendance Fetch Error:", err);
+            this.loading = false;
+            this.cdr.detectChanges();
+          });
         }
       });
   }

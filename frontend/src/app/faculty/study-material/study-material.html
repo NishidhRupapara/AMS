@@ -38,13 +38,17 @@
             <input type="text" class="form-control shadow-none" name="title" [(ngModel)]="form.title" #tit="ngModel" required minlength="3" placeholder="e.g. Unit 1 PDF Notes" [class.is-invalid]="tit.invalid && tit.touched">
             <div class="invalid-feedback">Descriptive title is required.</div>
           </div>
+          <div class="col-md-12 mb-3">
+            <label class="form-label fw-bold">Material URL (Optional)</label>
+            <input type="url" class="form-control shadow-none" name="materialLink" [(ngModel)]="form.materialLink" placeholder="https://drive.google.com/...">
+          </div>
           <div class="col-md-12 mb-4">
-            <label class="form-label fw-bold">Material URL (Drive/Link)</label>
-            <input type="url" class="form-control shadow-none" name="materialLink" [(ngModel)]="form.materialLink" #link="ngModel" required pattern="https?://.+" placeholder="https://drive.google.com/..." [class.is-invalid]="link.invalid && link.touched">
-            <div class="invalid-feedback">A valid URL (starting with http/https) is required.</div>
+            <label class="form-label fw-bold">Or Upload File</label>
+            <input type="file" class="form-control shadow-none" (change)="onFileChange($event)">
+            <small class="text-muted" *ngIf="form.fileName">Selected: {{ form.fileName }}</small>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold rounded-pill shadow" [disabled]="materialForm.invalid || isLoading">
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold rounded-pill shadow" [disabled]="isLoading">
            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
            SHARE WITH STUDENTS
         </button>
@@ -68,7 +72,10 @@
               <td><span class="badge bg-info text-dark">{{ m.department }}</span></td>
               <td class="fw-bold">{{ m.title }}</td>
               <td>
-                <a [href]="m.link" target="_blank" class="btn btn-sm btn-outline-primary">View Link</a>
+                <div class="hstack gap-2">
+                  <a *ngIf="m.link" [href]="m.link" target="_blank" class="btn btn-sm btn-outline-primary">View Link</a>
+                  <button *ngIf="m.fileData" (click)="downloadFile(m)" class="btn btn-sm btn-outline-success">Download</button>
+                </div>
               </td>
             </tr>
             <tr *ngIf="myMaterials.length === 0 && !isLoading">

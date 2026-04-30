@@ -1,12 +1,13 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 import { StudentSidebarComponent } from '../student-sidebar/student-sidebar';
 
 @Component({
   selector: 'app-student-home',
   standalone: true,
-  imports: [CommonModule, StudentSidebarComponent],
+  imports: [CommonModule, RouterModule, StudentSidebarComponent],
   templateUrl: './student-home.html',
   styleUrls: ['./student-home.css']
 })
@@ -24,7 +25,11 @@ export class StudentHomeComponent implements OnInit {
   latestNotice: any = null;
   isLoading: boolean = true;
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private http: HttpClient, 
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
+  ) {}
 
   ngOnInit(): void {
     const rawId = sessionStorage.getItem("sessionStudentId");
@@ -41,24 +46,29 @@ export class StudentHomeComponent implements OnInit {
   }
 
   loadDashboardData() {
-    // 1. Fetch Attendance Stats for this specific student
-    this.http.get<any[]>(`http://localhost:5139/api/Student/my-attendance/${this.studentId}`)
-      .subscribe(data => {
-        const attendanceData = Array.isArray(data) ? data : [];
-        this.stats.totalClasses = attendanceData.length;
-        this.stats.presentDays = attendanceData.filter(a => (a.status || a.Status) === 'Present').length;
-        this.stats.attendancePercentage = this.stats.totalClasses > 0 
-          ? Math.round((this.stats.presentDays / this.stats.totalClasses) * 100) 
-          : 0;
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      });
+    this.zone.run(() => {
+      // 1. Fetch Attendance Stats
+      this.http.get<any[]>(`http://localhost:5139/api/Student/my-attendance/${this.studentId}`)
+        .subscribe({
+          next: (data) => {
+            const attendanceData = Array.isArray(data) ? data : [];
+            this.stats.totalClasses = attendanceData.length;
+            this.stats.presentDays = attendanceData.filter(a => (a.status || a.Status) === 'Present').length;
+            this.stats.attendancePercentage = this.stats.totalClasses > 0 
+              ? Math.round((this.stats.presentDays / this.stats.totalClasses) * 100) 
+              : 0;
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          },
+          error: () => { this.isLoading = false; this.cdr.detectChanges(); }
+        });
 
-    // 2. Fetch Latest Notice for their department
-    this.http.get<any[]>(`http://localhost:5139/api/Admin/notices`)
-      .subscribe(notices => {
-        this.latestNotice = notices[0]; // Gets the most recent one
-        this.cdr.detectChanges();
-      });
+      // 2. Fetch Latest Notice
+      this.http.get<any[]>(`http://localhost:5139/api/Admin/notices`)
+        .subscribe(notices => {
+          this.latestNotice = notices[0];
+          this.cdr.detectChanges();
+        });
+    });
   }
 }

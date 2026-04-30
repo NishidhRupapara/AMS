@@ -20,7 +20,8 @@
             <thead class="table-dark text-center">
               <tr>
                 <th>#</th>
-                <th>Faculty Name</th>
+                <th>From Student</th>
+                <th>Addressing To</th>
                 <th>Title</th>
                 <th>Message</th>
                 <th>Posted At</th>
@@ -32,7 +33,8 @@
             <tbody>
               <tr *ngFor="let s of suggestions; let i = index">
                 <td class="text-center">{{ i + 1 }}</td>
-                <td class="fw-bold">{{ s.factName }}</td>
+                <td class="fw-bold">{{ s.studentName }}</td>
+                <td class="text-primary fw-bold">{{ s.targetName }}</td>
                 <td>{{ s.title }}</td>
                 <td>{{ s.message }}</td>
                 <td class="text-center">{{ s.postedAt | date:'shortDate' }}</td>

@@ -7,7 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Models.Admin;
 using WebApplication1.Models.Student;
-using YourNamespace.Models; 
+using WebApplication1.Models.Faculty;
+using WebApplication1.Models; 
 
 namespace WebApplication1.Controllers
 {
@@ -21,6 +22,10 @@ namespace WebApplication1.Controllers
         private readonly IMongoCollection<NoticeAdmin> _notices;
         private readonly IMongoCollection<F_Suggestion> _suggestions;
         private readonly IMongoCollection<BsonDocument> _departments; 
+        private readonly IMongoCollection<Faculty> _faculty; 
+        private readonly IMongoCollection<WebApplication1.Models.LeaveRequest> _leaveRequests;
+        private readonly IMongoCollection<Assignment> _assignments;
+        private readonly IMongoCollection<StudyMaterial> _studyMaterials;
 
         public AdminController(IConfiguration config)
         {
@@ -33,6 +38,10 @@ namespace WebApplication1.Controllers
             _notices = db.GetCollection<NoticeAdmin>("AdminNotice");
             _suggestions = db.GetCollection<F_Suggestion>("F_Suggestion");
             _departments = db.GetCollection<BsonDocument>("Department");
+            _faculty = db.GetCollection<Faculty>("faculties");
+            _leaveRequests = db.GetCollection<WebApplication1.Models.LeaveRequest>("LeaveRequests");
+            _assignments = db.GetCollection<Assignment>("Assignments");
+            _studyMaterials = db.GetCollection<StudyMaterial>("StudyMaterials");
         }
 
         #region 1. Authentication
@@ -59,18 +68,23 @@ namespace WebApplication1.Controllers
         {
             var attendanceList = await _attendanceCollection.Find(_ => true).ToListAsync();
             var studentList = await _student.Find(_ => true).ToListAsync();
+            var facultyList = await _faculty.Find(_ => true).ToListAsync();
 
             var result = attendanceList.Select(at => {
                 var st = studentList.FirstOrDefault(s => s.Sid.ToString() == at.StudentId);
+                var fac = facultyList.FirstOrDefault(f => f.Fid.ToString() == at.FacultyId || f.Id == at.FacultyId);
                 
                 return new StudentAttedenceView {
                     Id = at.Id,
                     StudentId = at.StudentId,
                     Fullname = st != null ? $"{st.Fname} {st.Lname}".Trim() : "Unknown Student",
                     FacultyId = at.FacultyId,
+                    FacultyName = fac != null ? $"{fac.Fname} {fac.Lname}".Trim() : "Unknown Faculty",
+                    Department = fac?.Department ?? "Unknown",
                     Status = at.Status,
                     Remark = at.Remark ?? "",
-                    Date = at.Date.ToLocalTime() 
+                    Date = at.Date.ToLocalTime(),
+                    ImageUrl = st?.ImageUrl
                 };
             }).OrderByDescending(x => x.Date).ToList();
 
@@ -96,7 +110,7 @@ namespace WebApplication1.Controllers
                     .Set(a => a.Status, updated.Status)
                     .Set(a => a.Remark, updated.Remark)
                     .Set(a => a.Date, updated.Date)
-                    .Set(a => a.FacultyId, updated.FacultyId);
+                    .Set(a => a.FacultyIdObj, updated.FacultyId);
 
                 var result = await _attendanceCollection.UpdateOneAsync(filter, update);
                 if (result.MatchedCount == 0) return NotFound(new { message = "Record not found" });
@@ -182,6 +196,10 @@ namespace WebApplication1.Controllers
                         id = dict.ContainsKey("_id") ? dict["_id"].ToString() : "",
                         suggestionId = dict.ContainsKey("SuggestionId") ? dict["SuggestionId"] : 0,
                         facultyId = dict.ContainsKey("FacultyId") ? dict["FacultyId"]?.ToString() : "",
+                        target = dict.ContainsKey("Target") ? dict["Target"] : "Faculty",
+                        targetName = dict.ContainsKey("TargetName") ? dict["TargetName"] : "Admin",
+                        studentName = dict.ContainsKey("StudentName") ? dict["StudentName"] : "Student",
+                        studentId = dict.ContainsKey("StudentId") ? dict["StudentId"]?.ToString() : "0",
                         title = dict.ContainsKey("Title") ? dict["Title"] : "",
                         message = dict.ContainsKey("Message") ? dict["Message"] : "",
                         postedAt = dict.ContainsKey("PostedAt") ? dict["PostedAt"] : DateTime.UtcNow,
@@ -211,6 +229,73 @@ namespace WebApplication1.Controllers
             return Ok(new { message = "Response saved successfully!" });
         }
         #endregion
+
+        #region 6. Leave Request Management
+        [HttpGet("all-leaves")]
+        public async Task<IActionResult> GetAllLeaves()
+        {
+            var leaves = await _leaveRequests.Find(_ => true).SortByDescending(l => l.AppliedOn).ToListAsync();
+            var faculties = await _faculty.Find(_ => true).ToListAsync();
+            
+            var result = leaves.Select(l => {
+                var fac = faculties.FirstOrDefault(f => f.Fid.ToString() == l.FacultyId || f.Id == l.FacultyId);
+                return new {
+                    id = l.Id,
+                    facultyId = l.FacultyId,
+                    facultyName = fac != null ? $"{fac.Fname} {fac.Lname}".Trim() : "Unknown",
+                    leaveType = l.LeaveType,
+                    fromDate = l.FromDate,
+                    toDate = l.ToDate,
+                    reason = l.Reason,
+                    status = l.Status,
+                    appliedOn = l.AppliedOn,
+                    adminRemark = l.AdminRemark
+                };
+            }).ToList();
+
+            return Ok(result);
+        }
+
+        [HttpPut("leave/{id}")]
+        public async Task<IActionResult> UpdateLeaveStatus(string id, [FromBody] LeaveUpdateDto updated)
+        {
+            var update = Builders<WebApplication1.Models.LeaveRequest>.Update
+                .Set(l => l.Status, updated.Status)
+                .Set(l => l.AdminRemark, updated.AdminRemark);
+            await _leaveRequests.UpdateOneAsync(l => l.Id == id, update);
+            return Ok(new { message = "Leave request updated!" });
+        }
+        #endregion
+
+        #region 7. Academic Content Management (Assignments & Materials)
+        [HttpGet("all-assignments")]
+        public async Task<IActionResult> GetAllAssignments() => Ok(await _assignments.Find(_ => true).SortByDescending(a => a.PostedOn).ToListAsync());
+
+        [HttpDelete("assignment/{id}")]
+        public async Task<IActionResult> DeleteAssignment(string id)
+        {
+            await _assignments.DeleteOneAsync(a => a.Id == id);
+            return Ok(new { message = "Assignment deleted" });
+        }
+
+        [HttpGet("all-materials")]
+        public async Task<IActionResult> GetAllMaterials() => Ok(await _studyMaterials.Find(_ => true).SortByDescending(m => m.PostedOn).ToListAsync());
+
+        [HttpDelete("material/{id}")]
+        public async Task<IActionResult> DeleteMaterial(string id)
+        {
+            await _studyMaterials.DeleteOneAsync(m => m.Id == id);
+            return Ok(new { message = "Material deleted" });
+        }
+
+        [HttpPost("post-material")]
+        public async Task<IActionResult> PostMaterial([FromBody] StudyMaterial material)
+        {
+            material.PostedOn = DateTime.UtcNow;
+            await _studyMaterials.InsertOneAsync(material);
+            return Ok(new { message = "Material posted successfully" });
+        }
+        #endregion
     }
 
     // ==============================================================
@@ -228,5 +313,11 @@ namespace WebApplication1.Controllers
     {
         public string Status { get; set; } = string.Empty;
         public string Reply { get; set; } = string.Empty;
+    }
+
+    public class LeaveUpdateDto
+    {
+        public string Status { get; set; } = string.Empty;
+        public string AdminRemark { get; set; } = string.Empty;
     }
 }

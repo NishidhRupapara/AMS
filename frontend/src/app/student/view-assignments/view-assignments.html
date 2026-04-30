@@ -1,0 +1,38 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-student-sidebar></app-student-sidebar>
+  <div class="flex-grow-1 p-4">
+    <div class="container-fluid">
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-primary text-white mb-4">
+        <h2 class="fw-bold mb-0">My Assignments 📚</h2>
+        <p class="opacity-75 mb-0">Upcoming tasks and deadlines for your department</p>
+      </div>
+
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+      </div>
+
+      <div class="row g-4" *ngIf="!isLoading">
+        <div class="col-md-6 col-lg-4" *ngFor="let a of assignments">
+          <div class="card h-100 border-0 shadow-sm rounded-4 assignment-card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                <span class="badge bg-primary-subtle text-primary px-3 py-2">{{ a.subject }}</span>
+                <span class="text-danger fw-bold small"><i class="fas fa-clock me-1"></i> Due: {{ a.deadline | date:'mediumDate' }}</span>
+              </div>
+              <h5 class="card-title fw-bold text-dark">{{ a.title }}</h5>
+              <p class="card-text text-secondary small">{{ a.description || 'No instructions provided.' }}</p>
+            </div>
+            <div class="card-footer bg-white border-0 pb-3 hstack gap-2">
+              <span class="text-muted small">Posted on: {{ a.postedOn | date:'shortDate' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="assignments.length === 0" class="col-12 text-center py-5 text-muted">
+          <i class="fas fa-tasks fa-3x mb-3"></i>
+          <p>No assignments posted for your department yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

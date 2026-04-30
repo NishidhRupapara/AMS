@@ -1,0 +1,55 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-student-sidebar></app-student-sidebar>
+  <div class="flex-grow-1 p-4 d-flex align-items-center justify-content-center">
+    <div class="container" style="max-width: 800px;">
+      
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-info"></div>
+      </div>
+
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden" *ngIf="!isLoading && profile">
+        <div class="bg-info p-5 text-white text-center">
+          <div class="rounded-circle bg-white p-1 d-inline-block shadow mb-3">
+            <img src="https://ui-avatars.com/api/?name={{profile.fname}}+{{profile.lname}}&size=120&background=random" class="rounded-circle" alt="Avatar">
+          </div>
+          <h2 class="fw-bold mb-0">{{ profile.fname }} {{ profile.lname }}</h2>
+          <span class="badge bg-white text-info mt-2 px-3">Student Roll No: {{ profile.sid }}</span>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label class="text-muted small fw-bold text-uppercase">Department</label>
+              <p class="fs-5 fw-bold text-dark mb-0">{{ profile.department }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="text-muted small fw-bold text-uppercase">Email Identity</label>
+              <p class="fs-5 fw-bold text-dark mb-0">{{ profile.email_Id }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="text-muted small fw-bold text-uppercase">Academic Consultant</label>
+              <p class="fs-5 fw-bold text-info mb-0">Assigned Faculty (ID: {{ profile.faculty_Id }})</p>
+            </div>
+            <div class="col-md-6">
+               <label class="text-muted small fw-bold text-uppercase">Contact Number</label>
+               <p class="fs-5 fw-bold text-dark mb-0">{{ profile.mo_Number }}</p>
+            </div>
+            <div class="col-12 border-top pt-4">
+               <div class="bg-light p-3 rounded-3 d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="mb-0 fw-bold">Address</h6>
+                    <small class="text-muted">{{ profile.address }}</small>
+                  </div>
+                  <i class="fas fa-map-marker-alt text-info fs-4"></i>
+               </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-footer bg-light text-center py-3 border-0">
+           <small class="text-muted">Account active since {{ profile.createdAt | date:'longDate' }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

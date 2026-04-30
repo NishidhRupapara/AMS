@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApplication1.Models.Faculty;
 using WebApplication1.Models.Student;
 using WebApplication1.Models;
 
@@ -80,49 +81,93 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var filterBuilder = Builders<StudentAttendance>.Filter;
-                var filter = filterBuilder.Eq(a => a.FacultyId, facultyId);
-
-                // Fallback check: lookup numeric Fid
+                var attendanceColRaw = _attendanceCollection.Database.GetCollection<BsonDocument>("StudentAt");
                 var facultyCol = _attendanceCollection.Database.GetCollection<BsonDocument>("faculties");
-                if (ObjectId.TryParse(facultyId, out ObjectId oid))
+                
+                // 🚀 BROAD SEARCH: Build an OR filter for every possible ID permutation
+                var possibleFacultyKeys = new[] { "FacultyId", "facultyId", "Faculty_Id", "faculty_id", "Fid", "fid" };
+                var filterList = new List<FilterDefinition<BsonDocument>>();
+
+                foreach (var key in possibleFacultyKeys)
                 {
-                    var fDoc = await facultyCol.Find(Builders<BsonDocument>.Filter.Eq("_id", oid)).FirstOrDefaultAsync();
-                    if (fDoc != null && fDoc.Contains("fid"))
+                    filterList.Add(Builders<BsonDocument>.Filter.Eq(key, facultyId));
+                    if (ObjectId.TryParse(facultyId, out ObjectId oid))
+                        filterList.Add(Builders<BsonDocument>.Filter.Eq(key, oid));
+                    if (long.TryParse(facultyId, out long num))
                     {
-                        var fid = fDoc["fid"].ToString();
-                        filter = filterBuilder.Or(filter, filterBuilder.Eq(a => a.FacultyId, fid));
+                        filterList.Add(Builders<BsonDocument>.Filter.Eq(key, (int)num));
+                        filterList.Add(Builders<BsonDocument>.Filter.Eq(key, num));
+                        filterList.Add(Builders<BsonDocument>.Filter.Eq(key, num.ToString()));
                     }
                 }
-                else if (long.TryParse(facultyId, out long numericFid))
-                {
-                    filter = filterBuilder.Or(filter, filterBuilder.Eq(a => a.FacultyId, numericFid.ToString()));
-                }
 
-                var attendanceList = await _attendanceCollection.Find(filter).ToListAsync();
+                var finalFilter = Builders<BsonDocument>.Filter.Or(filterList);
+                var rawAttendanceList = await attendanceColRaw.Find(finalFilter).ToListAsync();
+
+                // 🕵️ FALLBACK: If still empty, try to match by Faculty Name (Alan -> ID search)
+                if (!rawAttendanceList.Any())
+                {
+                    var fDoc = await facultyCol.Find(Builders<BsonDocument>.Filter.Regex("FirstName", new BsonRegularExpression(facultyId, "i"))).FirstOrDefaultAsync();
+                    if (fDoc == null) fDoc = await facultyCol.Find(Builders<BsonDocument>.Filter.Eq("_id", facultyId)).FirstOrDefaultAsync();
+
+                    if (fDoc != null)
+                    {
+                        var altId = fDoc.Contains("fid") ? fDoc["fid"] : fDoc["_id"];
+                        var altFilterList = new List<FilterDefinition<BsonDocument>>();
+                        foreach (var key in possibleFacultyKeys)
+                        {
+                            altFilterList.Add(Builders<BsonDocument>.Filter.Eq(key, altId));
+                            altFilterList.Add(Builders<BsonDocument>.Filter.Eq(key, altId.ToString()));
+                        }
+                        rawAttendanceList = await attendanceColRaw.Find(Builders<BsonDocument>.Filter.Or(altFilterList)).ToListAsync();
+                    }
+                }
+                
                 var studentList = await _student.Find(_ => true).ToListAsync();
 
-                var result = attendanceList.Select(at =>
+                var result = rawAttendanceList.Select(doc =>
                 {
-                    // ✅ FIX: Match numeric Sid (Int32 7) with string StudentId ("7")
-                    var st = studentList.FirstOrDefault(s => s.Sid.ToString() == at.StudentId);
+                    var dict = doc.ToDictionary();
+                    
+                    // Robustly extract fields regardless of case or naming style
+                    string sId = (dict.ContainsKey("StudentId") ? dict["StudentId"] : 
+                                 dict.ContainsKey("studentId") ? dict["studentId"] : 
+                                 dict.ContainsKey("Sid") ? dict["Sid"] : 
+                                 dict.ContainsKey("sid") ? dict["sid"] : "").ToString() ?? "";
+                                 
+                    string status = (dict.ContainsKey("Status") ? dict["Status"] : 
+                                    dict.ContainsKey("status") ? dict["status"] : "Present").ToString() ?? "Present";
+                                    
+                    string remark = (dict.ContainsKey("Remark") ? dict["Remark"] : 
+                                    dict.ContainsKey("remark") ? dict["remark"] : "").ToString() ?? "";
+                    
+                    DateTime date = DateTime.UtcNow;
+                    try {
+                        if (dict.ContainsKey("Date")) date = Convert.ToDateTime(dict["Date"]);
+                        else if (dict.ContainsKey("date")) date = Convert.ToDateTime(dict["date"]);
+                    } catch { /* fallback to UtcNow */ }
+
+                    var st = studentList.FirstOrDefault(s => s.Sid.ToString() == sId || s.Id == sId);
                     
                     return new StudentAttedenceView
                     {
-                        Id = at.Id,
-                        StudentId = at.StudentId,
-                        // If match found, show Fullname; otherwise "Unknown Student"
+                        Id = dict.ContainsKey("_id") ? dict["_id"].ToString() : "",
+                        StudentId = sId,
                         Fullname = st != null ? $"{st.Fname} {st.Lname}".Trim() : "Unknown Student",
-                        FacultyId = at.FacultyId,
-                        Status = at.Status,
-                        Remark = at.Remark ?? "-",
-                        Date = at.Date.ToLocalTime() 
+                        ImageUrl = st?.ImageUrl ?? "",
+                        FacultyId = facultyId,
+                        Status = status,
+                        Remark = remark,
+                        Date = date.ToLocalTime()
                     };
                 }).OrderByDescending(x => x.Date).ToList();
 
                 return Ok(result);
             }
-            catch (Exception ex) { return StatusCode(500, new { message = "History fetch failed", error = ex.Message }); }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "History fetch failed", error = ex.Message });
+            }
         }
 
         [HttpGet("all")]
@@ -286,7 +331,23 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                var filter = Builders<StudentAttendance>.Filter.Eq(a => a.StudentId, sid);
+                var filterBuilder = Builders<StudentAttendance>.Filter;
+                var filter = filterBuilder.Eq(a => a.StudentIdObj, sid);
+
+                if (ObjectId.TryParse(sid, out ObjectId oid))
+                {
+                    filter = filterBuilder.Or(filter, filterBuilder.Eq(a => a.StudentIdObj, oid));
+                }
+
+                if (long.TryParse(sid, out long numericSid))
+                {
+                    filter = filterBuilder.Or(
+                        filter, 
+                        filterBuilder.Eq(a => a.StudentIdObj, (int)numericSid),
+                        filterBuilder.Eq(a => a.StudentIdObj, numericSid)
+                    );
+                }
+
                 var records = await _attendanceCollection.Find(filter).ToListAsync();
                 return Ok(records);
             }
@@ -364,10 +425,17 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                suggestion.SuggestionId = (int)GetNextSid(); // Reusing the Sid counter or could use a specific one
+                // Ensure SuggestionId is unique using a specialized counter
+                var filter = Builders<Counter>.Filter.Eq(c => c.Id, "SuggestionId");
+                var update = Builders<Counter>.Update.Inc(c => c.Seq, 1);
+                var options = new FindOneAndUpdateOptions<Counter> { IsUpsert = true, ReturnDocument = ReturnDocument.After };
+                var counter = await _counters.FindOneAndUpdateAsync(filter, update, options);
+
+                suggestion.SuggestionId = counter.Seq;
                 suggestion.PostedAt = DateTime.UtcNow;
                 suggestion.Status = "Pending";
                 suggestion.Reply = "Awaiting feedback...";
+                
                 await _suggestions.InsertOneAsync(suggestion);
                 return Ok(new { message = "✅ Suggestion submitted successfully!" });
             }

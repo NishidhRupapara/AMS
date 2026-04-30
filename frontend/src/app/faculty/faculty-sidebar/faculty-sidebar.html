@@ -1,84 +1,128 @@
-<div class="sidebar d-flex flex-column justify-content-between vh-100 p-0 shadow bg-dark">
-  <div>
-    <div class="text-center text-white py-4 border-bottom border-secondary mb-3">
-      <h5 class="mb-0 fw-bold">Attendance System</h5>
-      <small class="text-info">Welcome, {{ username }}!</small>
-    </div>
-    
-    <ul class="nav flex-column px-2 gap-1">
+<div class="custom-sidebar shadow">
+  <!-- Header Section -->
+  <div class="sidebar-header">
+    <h4 class="mb-0 tracking-wide">Faculty Panel</h4>
+    <small class="text-info mt-2 d-block">{{ username }}</small>
+  </div>
+
+  <!-- Navigation Section -->
+  <div class="nav-scroll">
+    <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
-           routerLink="/faculty-home" routerLinkActive="bg-primary active">
-          🏠 Dashboard
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/faculty-home" routerLinkActive="active-link">
+          <span><span class="emoji-icon">🏠</span> Dashboard</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
         </a>
       </li>
 
+      <!-- Attendance Section -->
+      <div class="section-label">
+        <small class="x-small">Attendance</small>
+      </div>
       <li class="nav-item">
-        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
-           routerLink="/students" routerLinkActive="bg-primary active">
-          📘 Student Center
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/take-attendance" routerLinkActive="active-link">
+          <span><span class="emoji-icon">📅</span> Mark Attendance</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/attendance-history" routerLinkActive="active-link">
+          <span><span class="emoji-icon">👁️</span> View Attendance</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
         </a>
       </li>
 
+      <!-- Academic Section -->
+      <div class="section-label">
+        <small class="x-small">Academic</small>
+      </div>
       <li class="nav-item">
-        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
-           routerLink="/take-attendance" routerLinkActive="bg-primary active">
-          📝 Take Attendance
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/students" routerLinkActive="active-link">
+          <span><span class="emoji-icon">👥</span> My Students</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/assignment" routerLinkActive="active-link">
+          <span><span class="emoji-icon">📝</span> Add Assignment</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/study-material" routerLinkActive="active-link">
+          <span><span class="emoji-icon">📖</span> Post Material</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
         </a>
       </li>
 
+      <!-- Management Section -->
+      <div class="section-label">
+        <small class="x-small">Management</small>
+      </div>
       <li class="nav-item">
-        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
-           routerLink="/student-report" routerLinkActive="bg-primary active">
-          📊 Report
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/notice" routerLinkActive="active-link">
+          <span><span class="emoji-icon">🔔</span> Add Notice</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/faculty-leave" routerLinkActive="active-link">
+          <span><span class="emoji-icon">🚪</span> Leave Request</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
         </a>
       </li>
 
+      <!-- Exams Section -->
+      <div class="section-label">
+        <small class="x-small">Exams</small>
+      </div>
       <li class="nav-item">
-        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
-           routerLink="/attendance-history" routerLinkActive="bg-primary active">
-          🕒 Attendance History
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/exam-creation" routerLinkActive="active-link">
+          <span><span class="emoji-icon">✍️</span> Taken Exam</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
-           routerLink="/assignment" routerLinkActive="bg-primary active">
-          📚 Assignments
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
-           routerLink="/study-material" routerLinkActive="bg-primary active">
-          📖 Study Material
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
-           routerLink="/notice" routerLinkActive="bg-primary active">
-          📩 Notice Section
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/exam-students" routerLinkActive="active-link">
+          <span><span class="emoji-icon">📊</span> Exam Students</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
         </a>
       </li>
 
+      <!-- Account Section -->
+      <div class="section-label">
+        <small class="x-small">Account</small>
+      </div>
       <li class="nav-item">
-        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
-           routerLink="/suggestion" routerLinkActive="bg-primary active">
-          📨 Suggestion
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/suggestion" routerLinkActive="active-link">
+          <span><span class="emoji-icon">💡</span> Suggestions</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
         </a>
       </li>
-
       <li class="nav-item">
-        <a class="nav-link text-white py-2 px-3 rounded text-start w-100" 
-           routerLink="/profile" routerLinkActive="bg-primary active">
-          👤 Profile
+        <a class="nav-link d-flex justify-content-between align-items-center"
+           routerLink="/profile" routerLinkActive="active-link">
+          <span><span class="emoji-icon">👤</span> Profile Settings</span>
+          <i class="fas fa-chevron-right small-arrow"></i>
         </a>
       </li>
     </ul>
   </div>
 
-  <div class="p-3 border-top border-secondary">
-    <button class="btn btn-outline-danger w-100 fw-bold" (click)="handleLogout()">
+  <!-- Footer Section -->
+  <div class="sidebar-footer">
+    <button class="btn logout-btn w-100 fw-bold shadow-sm" (click)="handleLogout()">
       🚪 Logout
     </button>
   </div>

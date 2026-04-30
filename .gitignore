@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+dist/
+.angular/
+
+# Build artifacts (C#)
+**/bin/
+**/obj/
+*.user
+*.userosscache
+*.sln.docstates
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Environments
+.env
+.env.*
+appsettings.Development.json
+
+# Temporary files
+*.tmp
+*.log
+*.swp

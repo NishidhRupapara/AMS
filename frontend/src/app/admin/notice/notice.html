@@ -20,15 +20,15 @@
           <table *ngIf="notices.length > 0" class="table table-bordered table-striped align-middle">
             <thead class="table-dark text-center">
               <tr>
-                <th>Notice ID</th>
+                <th>#</th>
                 <th>Title</th>
                 <th>Message</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let notice of notices">
-                <td class="text-center">{{ notice.noticeId }}</td>
+              <tr *ngFor="let notice of notices; let i = index">
+                <td class="text-center">{{ i + 1 }}</td>
                 <td class="fw-bold">{{ notice.noticeTitle }}</td>
                 <td>{{ notice.noticeMessage }}</td>
                 <td class="text-center">

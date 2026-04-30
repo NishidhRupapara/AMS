@@ -1,0 +1,97 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4">
+    <div class="portal-header p-4 rounded-4 shadow-sm bg-gradient-dark text-white mb-4">
+      <h2 class="fw-bold mb-0">Study Vault Management</h2>
+      <p class="mb-0 opacity-75">Upload new resources or manage existing study materials</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- POST MATERIAL FORM -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4">
+          <div class="card-body p-4">
+            <h5 class="fw-bold text-dark mb-4"><i class="fas fa-plus-circle me-2 text-primary"></i> Post New Resource</h5>
+            <form (ngSubmit)="onPostMaterial()">
+              <div class="mb-3">
+                <label class="form-label text-uppercase x-small fw-bold text-muted">Material Title</label>
+                <input type="text" class="form-control bg-light border-0 py-2" [(ngModel)]="newMaterial.title" name="title" placeholder="e.g. Unit 1 Notes">
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-uppercase x-small fw-bold text-muted">Subject</label>
+                <input type="text" class="form-control bg-light border-0 py-2" [(ngModel)]="newMaterial.subject" name="subject" placeholder="e.g. Mathematics">
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-uppercase x-small fw-bold text-muted">Department</label>
+                <select class="form-select bg-light border-0 py-2" [(ngModel)]="newMaterial.department" name="dept">
+                  <option value="">Select Department</option>
+                  <option *ngFor="let d of departments" [value]="d.deptName">{{ d.deptName }}</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label class="form-label text-uppercase x-small fw-bold text-muted">Or Upload File</label>
+                <input type="file" class="form-control bg-light border-0 py-2" (change)="onFileChange($event)">
+                <small class="text-muted" *ngIf="newMaterial.fileName">Selected: {{ newMaterial.fileName }}</small>
+              </div>
+              <button type="submit" class="btn btn-dark w-100 py-2 fw-bold rounded-pill shadow-sm" [disabled]="isPosting">
+                <span *ngIf="!isPosting">🚀 Publish Resource</span>
+                <span *ngIf="isPosting" class="spinner-border spinner-border-sm me-2"></span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- MATERIALS LIST -->
+      <div class="col-lg-8">
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+
+        <div *ngIf="!isLoading" class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="bg-light text-dark">
+                <tr>
+                  <th class="ps-4">Resource</th>
+                  <th>Department</th>
+                  <th>Posted On</th>
+                  <th class="text-end pe-4">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let m of materials">
+                  <td class="ps-4">
+                    <div class="fw-bold text-dark">{{ m.title }}</div>
+                    <small class="text-primary">{{ m.subject }}</small>
+                  </td>
+                  <td><span class="badge bg-primary-soft text-primary">{{ m.department }}</span></td>
+                  <td class="text-muted small">{{ m.postedOn | date:'shortDate' }}</td>
+                  <td class="text-end pe-4">
+                    <div class="hstack gap-2 justify-content-end">
+                      <a *ngIf="m.link" [href]="m.link" target="_blank" class="btn btn-sm btn-outline-dark rounded-circle"><i class="fas fa-external-link-alt"></i></a>
+                      <button *ngIf="m.fileData" (click)="downloadFile(m)" class="btn btn-sm btn-outline-primary rounded-circle"><i class="fas fa-download"></i></button>
+                      <button class="btn btn-sm btn-outline-danger rounded-circle" (click)="deleteMaterial(m.id || m.Id)"><i class="fas fa-trash"></i></button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="materials.length === 0">
+                  <td colspan="4" class="text-center py-5 text-muted">No materials found.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-gradient-dark { background: linear-gradient(135deg, #1a1e21 0%, #343a40 100%); }
+  .bg-primary-soft { background-color: rgba(13, 110, 253, 0.1); }
+  .x-small { font-size: 0.7rem; letter-spacing: 0.5px; }
+  .animate-fade { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+</style>

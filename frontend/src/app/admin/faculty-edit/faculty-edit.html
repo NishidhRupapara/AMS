@@ -14,6 +14,12 @@
       </div>
 
       <form *ngIf="!loading" class="card p-4 shadow-sm border-0" (ngSubmit)="handleUpdate()">
+        <div class="text-center mb-4">
+          <img [src]="faculty.imageUrl || faculty.ImageUrl || 'https://ui-avatars.com/api/?name=' + (faculty.fname || faculty.Fname || faculty.username || 'Faculty') + '&background=random'" 
+               class="rounded-circle shadow" 
+               style="width: 120px; height: 120px; object-fit: cover;" 
+               alt="Faculty Profile">
+        </div>
         <div class="row g-3">
           
           <div class="col-md-4">
@@ -69,9 +75,13 @@
             <input type="text" name="username" class="form-control bg-light" [(ngModel)]="faculty.username" readonly />
           </div>
 
-          <div class="col-12">
+          <div class="col-md-12">
             <label class="form-label fw-bold">Address</label>
             <textarea name="address" class="form-control" rows="2" [(ngModel)]="faculty.address"></textarea>
+          </div>
+          <div class="col-md-12 mt-3">
+            <label class="form-label fw-bold">Profile Image URL</label>
+            <input type="text" name="imageUrl" class="form-control" [(ngModel)]="faculty.imageUrl" placeholder="Optional URL" />
           </div>
 
         </div>

@@ -1,22 +1,67 @@
-<div class="login-container shadow p-4 rounded bg-white" style="max-width: 400px; margin: 100px auto;">
-  <h2 class="text-center text-primary mb-4 fw-bold">Faculty Login</h2>
+<div class="login-wrapper d-flex justify-content-center align-items-center min-vh-100 px-3">
+  
+  <div class="login-card bg-white shadow-lg">
+    <div class="top-accent-line"></div>
+    
+    <div class="card-body p-4 p-md-5">
+      <div class="text-center mb-4">
+        <div class="login-icon mb-3">👨‍🏫</div>
+        <h2 class="fw-bold text-success mb-2 text-uppercase">Faculty Login</h2>
+        <p class="text-muted small">Access your academic dashboard</p>
+      </div>
 
-  <div *ngIf="error" class="alert alert-danger py-2 small text-center">{{ error }}</div>
+      <div *ngIf="error" class="alert alert-danger py-2 small animate-fade mb-3 text-center">
+        {{ error }}
+      </div>
 
-  <form #facultyLoginForm="ngForm" (ngSubmit)="facultyLoginForm.form.valid && handleSubmit()">
-    <div class="mb-3">
-      <label class="form-label fw-bold small">Email Address / Username</label>
-      <input type="text" name="Email" class="form-control shadow-none" [(ngModel)]="form.Email" #fmail="ngModel" placeholder="JohnDoe" required [class.is-invalid]="fmail.invalid && fmail.touched">
+      <form #loginForm="ngForm" (ngSubmit)="loginForm.form.valid && handleSubmit()">
+        
+        <div class="mb-3">
+          <label class="form-label fw-bold text-dark small">Email Address</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white text-secondary border-end-0">
+              <i class="fas fa-envelope"></i>
+            </span>
+            <input 
+              type="text" 
+              name="email" 
+              [(ngModel)]="form.Email" 
+              #mail="ngModel"
+              class="form-control border-start-0 ps-0 shadow-none" 
+              [class.is-invalid]="mail.invalid && mail.touched"
+              placeholder="Enter email" 
+              required>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-bold text-dark small">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white text-secondary border-end-0">
+              <i class="fas fa-lock"></i>
+            </span>
+            <input 
+              type="password" 
+              name="password" 
+              [(ngModel)]="form.Password" 
+              #pword="ngModel"
+              class="form-control border-start-0 ps-0 shadow-none" 
+              [class.is-invalid]="pword.invalid && pword.touched"
+              placeholder="Enter password" 
+              required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 py-2 fw-bold rounded-3 shadow" [disabled]="loading || loginForm.invalid">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+          {{ loading ? 'VERIFYING...' : 'LOGIN' }}
+        </button>
+      </form>
+
+      <div class="text-center mt-4 text-muted small">
+        Need an account? <a routerLink="/faculty-registration" class="text-success text-decoration-none fw-bold">Register Now</a>
+      </div>
+
     </div>
-
-    <div class="mb-3">
-      <label class="form-label fw-bold small">Password</label>
-      <input type="password" name="Password" class="form-control shadow-none" [(ngModel)]="form.Password" #fpass="ngModel" placeholder="••••••" required [class.is-invalid]="fpass.invalid && fpass.touched">
-    </div>
-
-    <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm rounded-3 py-2" [disabled]="loading || facultyLoginForm.invalid">
-      <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
-      {{ loading ? 'REDIRECTING...' : 'LOGIN' }}
-    </button>
-  </form>
+  </div>
 </div>

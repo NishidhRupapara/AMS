@@ -1,0 +1,132 @@
+<div class="d-flex bg-light min-vh-100">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="main-content flex-grow-1 p-4">
+    <div class="portal-header d-flex justify-content-between align-items-center mb-4 p-4 rounded-4 shadow-sm bg-gradient-dark text-white">
+      <div>
+        <h2 class="fw-bold mb-0">Global Exam Management</h2>
+        <p class="mb-0 opacity-75">Overview of all examinations across departments</p>
+      </div>
+      <div class="badge bg-light text-dark px-3 py-2 rounded-pill fw-bold">
+        Total Exams: {{ exams.length }}
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading" class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th class="ps-4">Title</th>
+              <th>Department</th>
+              <th>Subject</th>
+              <th>Date</th>
+              <th>Questions</th>
+              <th>Status</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let e of exams">
+              <td class="ps-4">
+                <div class="fw-bold text-dark">{{ e.title }}</div>
+                <small class="text-muted">ID: {{ e.id || e.Id }}</small>
+              </td>
+              <td>{{ e.department }}</td>
+              <td>{{ e.subject }}</td>
+              <td>{{ e.examDate | date:'mediumDate' }}</td>
+              <td>{{ e.questions?.length || 0 }}</td>
+              <td>
+                <div class="d-flex flex-column gap-1">
+                  <span class="badge" [ngClass]="e.isPublished ? 'bg-success' : 'bg-warning text-dark'">
+                    {{ e.isPublished ? 'Published' : 'Draft' }}
+                  </span>
+                  <span *ngIf="isExpired(e.examDate, e.durationMinutes)" class="badge bg-danger">Expired</span>
+                </div>
+              </td>
+              <td class="text-end pe-4">
+                <div class="d-flex justify-content-end gap-2">
+                  <button class="btn btn-sm btn-outline-primary" (click)="viewResults(e)" title="View Student Results">
+                    <i class="fas fa-poll"></i> Results
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteExam(e.id || e.Id)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="exams.length === 0">
+              <td colspan="7" class="text-center py-5 text-muted">No exams found in the system.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Modal -->
+  <div *ngIf="showModal" class="modal-overlay d-flex align-items-center justify-content-center">
+    <div class="modal-content-custom bg-white rounded-4 shadow-lg p-0 overflow-hidden animate-fade">
+      <div class="modal-header-custom p-4 bg-dark text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold">Results: {{ selectedExamTitle }}</h5>
+        <button class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body-custom p-4" style="max-height: 70vh; overflow-y: auto;">
+        <div *ngIf="selectedAttempts.length === 0" class="text-center py-4 text-muted">
+          <i class="fas fa-user-slash fa-2x mb-2"></i>
+          <p>No attempts recorded for this exam yet.</p>
+        </div>
+        <table *ngIf="selectedAttempts.length > 0" class="table table-sm table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Student Name</th>
+              <th>Student ID</th>
+              <th class="text-center">Score</th>
+              <th class="text-center">Total</th>
+              <th class="text-center">Percentage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of selectedAttempts">
+              <td>{{ a.studentName }}</td>
+              <td><small class="text-muted">{{ a.studentId }}</small></td>
+              <td class="text-center fw-bold">{{ a.score }}</td>
+              <td class="text-center">{{ a.totalMarks }}</td>
+              <td class="text-center">
+                <span class="badge" [ngClass]="((a.score/a.totalMarks)*100) >= 35 ? 'bg-success' : 'bg-danger'">
+                  {{ ((a.score / a.totalMarks) * 100) | number:'1.0-1' }}%
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer-custom p-3 border-top text-end">
+        <button class="btn btn-secondary rounded-pill px-4" (click)="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-gradient-dark { background: linear-gradient(135deg, #1a1e21 0%, #343a40 100%); }
+  .main-content { min-height: 100vh; }
+  .table thead th { border-top: none; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+  }
+  .modal-content-custom { width: 90%; max-width: 700px; }
+  .animate-fade { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+</style>

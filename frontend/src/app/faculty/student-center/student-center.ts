@@ -35,7 +35,7 @@ export class StudentCenterComponent implements OnInit {
 
   fetchMyStudents(): void {
     this.isLoading = true;
-    this.http.get<any[]>(`http://127.0.0.1:5139/api/Student/${this.facultyId}/students`)
+    this.http.get<any[]>(`http://localhost:5139/api/Student/${this.facultyId}/students`)
       .subscribe({
         next: (data) => {
           this.zone.run(() => {
